@@ -13,6 +13,12 @@ import WebSocketComponent from "./components/Gpt/WebSocket/WebSocket";
 import { Toaster } from "react-hot-toast";
 import NotFound from "./NotFound/index";
 import CaseFinder from "./CaseSearch/CaseFinder";
+import AboutUs from "./AboutUs/AboutUs";
+import Contact from "./Contact/Contact";
+import PrivacyPolicy from "./PrivacyPolicy/PrivacyPolicy";
+import RefundPolicy from "./RefundPolicy/RefundPolicy";
+import TermsAndConditions from "./Terms & Conditions/TermsAndConditions";
+import ShippingPolicy from "./ShippingPolicy/ShippingPolicy";
 
 function App() {
   const dispatch = useDispatch();
@@ -36,6 +42,16 @@ function App() {
           element: <AuthWall />,
           children: [{ path: "", element: <CaseFinder /> }],
         },
+
+        { path: "about-us", element: <AboutUs /> },
+        { path: "contact", element: <Contact /> },
+        {
+          path: "privacyPolicy",
+          element: <PrivacyPolicy />,
+        },
+        { path: "refund-and-cancellation-policy", element: <RefundPolicy /> },
+        { path: "terms-and-conditions", element: <TermsAndConditions /> },
+        { path: "shipping-and-delivery", element: <ShippingPolicy /> },
       ],
     },
     {
