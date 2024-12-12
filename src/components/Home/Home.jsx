@@ -7,7 +7,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="h-screen m-auto w-[80%] flex flex-col justify-center items-center">
+    <div className="h-screen overflow-auto m-auto w-[80%] flex flex-col justify-center items-center">
       <div>
         <h1
           className="text-5xl font-bold p-5 text-center"
