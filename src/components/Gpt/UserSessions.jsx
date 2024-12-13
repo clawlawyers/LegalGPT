@@ -20,16 +20,16 @@ export function UserSessions({ jwt, model }) {
     async function fetchUserSessions() {
       try {
         setIsLoading(true);
-        const res = await fetchWrapper.get(
-          `${NODE_API_ENDPOINT}/gpt/sessions/${model}`
-        );
-        // const res = await fetch(`${NODE_API_ENDPOINT}/gpt/sessions/${model}`, {
-        //   method: "GET",
-        //   headers: {
-        //     Authorization: `Bearer ${jwt}`,
-        //     "Content-Type": "application/json",
-        //   },
-        // });
+        // const res = await fetchWrapper.get(
+        //   `${NODE_API_ENDPOINT}/gpt/sessions/${model}`
+        // );
+        const res = await fetch(`${NODE_API_ENDPOINT}/gpt/sessions/${model}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+            "Content-Type": "application/json",
+          },
+        });
         const { data } = await res.json();
         setSessions(data);
       } catch (error) {

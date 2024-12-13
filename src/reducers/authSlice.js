@@ -3,20 +3,20 @@ import { NODE_API_ENDPOINT } from "../utils/utils";
 // import { generateResponse, retrieveActivePlanUser } from "../gpt/gptSlice";
 
 export const retrieveAuth = createAsyncThunk("auth/retrieveAuth", async () => {
-  const storedAuth = localStorage.getItem("auth");
+  const storedAuth = localStorage.getItem("token");
+  console.log(storedAuth);
   if (storedAuth) {
-    const parsedUser = await JSON.parse(storedAuth);
-    if (parsedUser.expiresAt < new Date().valueOf()) return null;
-    const props = await fetch(`${NODE_API_ENDPOINT}/client/auth/me`, {
+    // if (parsedUser.expiresAt < new Date().valueOf()) return null;
+    const props = await fetch(`${NODE_API_ENDPOINT}/gpt/user`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${parsedUser.jwt}`,
+        Authorization: `Bearer ${storedAuth}`,
       },
     });
     const parsedProps = await props.json();
     return {
-      props: { ambassador: parsedProps.data.ambassador },
-      user: parsedUser,
+      // props: { ambassador: parsedProps.data.ambassador },
+      user: { ...parsedProps.data, jwt: storedAuth },
     };
   } else return null;
 });
@@ -25,7 +25,7 @@ export const authSlice = createSlice({
   name: "auth",
   initialState: {
     user: null,
-    props: null,
+    // props: null,
     status: "idle",
     autologout: false,
     error: null,
@@ -34,16 +34,14 @@ export const authSlice = createSlice({
     login(state, action) {
       const { ambassador, ...user } = action.payload;
       state.user = user;
-      state.props = { ambassador };
       state.autologout = false;
       localStorage.setItem("auth", JSON.stringify(user));
       return;
     },
     logout(state) {
       state.user = null;
-      state.props = null;
 
-      localStorage.removeItem("auth");
+      localStorage.removeItem("token");
       return;
     },
     gptUserCreated(state) {
@@ -60,8 +58,8 @@ export const authSlice = createSlice({
       state.status = "loading";
     });
     builder.addCase(retrieveAuth.fulfilled, (state, action) => {
-      if (action.payload && action.payload.props && action.payload.user) {
-        state.props = action.payload.props;
+      if (action.payload && action.payload.user) {
+        // state.props = action.payload.props;
         state.user = action.payload.user;
       }
       state.status = "succeeded";

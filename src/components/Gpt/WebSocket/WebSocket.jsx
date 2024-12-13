@@ -691,9 +691,16 @@ const WebSocketComponent = () => {
     setSupremeCourtCases(true);
     //api call
     try {
-      const fetchData = await fetchWrapper.post(
+      // const fetchData = await fetchWrapper.post(
+      //   `${NODE_API_ENDPOINT}/gpt/session/judgement`,
+      //   {
+      //     body: JSON.stringify({ sessionId: params.sessionId }),
+      //   }
+      // );
+      const fetchData = await fetch(
         `${NODE_API_ENDPOINT}/gpt/session/judgement`,
         {
+          method: "POST",
           body: JSON.stringify({ sessionId: params.sessionId }),
         }
       );

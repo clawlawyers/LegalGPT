@@ -3,7 +3,11 @@ import "./App.css";
 import { useDispatch } from "react-redux";
 import { retrieveActivePlanUser } from "./reducers/gptSlice";
 import { retrieveAuth } from "./reducers/authSlice";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  useParams,
+} from "react-router-dom";
 import HomeLayout from "./components/Home/HomeLayout";
 import Home from "./components/Home/Home";
 import AuthWall from "./components/Auth/AuthWall";
@@ -25,7 +29,7 @@ function App() {
 
   useEffect(() => {
     dispatch(retrieveAuth());
-    dispatch(retrieveActivePlanUser());
+    // dispatch(retrieveActivePlanUser());
   }, []);
 
   const router = createBrowserRouter([

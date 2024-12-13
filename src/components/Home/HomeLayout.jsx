@@ -1,8 +1,17 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, useParams } from "react-router-dom";
 import FooterBanner from "../../FooterBanner/FooterBanner";
 
 const HomeLayout = () => {
+  const params = useLocation();
+  if (params.search !== "") {
+    // console.log(true);
+    const setToken = params.search.split("user=")[1];
+    localStorage.setItem("token", setToken);
+  } else {
+    console.log(false);
+  }
+
   return (
     <div
       style={{

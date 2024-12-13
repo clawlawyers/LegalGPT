@@ -13,6 +13,7 @@ import { UserSessions } from "../UserSessions";
 import { useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import { setRelatedCases } from "../../../reducers/gptSlice";
+import TimerComponent from "./TimerComponent";
 
 const SocketSidebar = () => {
   const toggleMenu = useSelector((state) => state.prompt.toggle);
@@ -22,13 +23,13 @@ const SocketSidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [activePlan, setActivePlan] = useState([]);
+  // const [activePlan, setActivePlan] = useState([]);
 
-  useEffect(() => {
-    if (plan) {
-      setActivePlan(activePlanFeatures(plan));
-    }
-  }, [plan]);
+  // useEffect(() => {
+  //   if (plan) {
+  //     setActivePlan(activePlanFeatures(plan));
+  //   }
+  // }, [plan]);
 
   const handleNewChat = () => {
     dispatch(removePromptsArr());
@@ -63,49 +64,33 @@ const SocketSidebar = () => {
                 className="bg-[#2D2D2D] p-2 m-1 rounded-lg"
                 style={{ fontSize: 14, color: "#777" }}
               >
-                {plan ? (
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center gap-2">
-                      <StarIcon />
-                      <div
-                        className="font-semibold"
-                        style={{ fontSize: 16, color: "white" }}
-                      >
-                        {currentUser ? currentUser.phoneNumber : <>Guest</>}
-                      </div>
-                    </div>
+                {/* {plan ? ( */}
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <StarIcon />
                     <div
-                      className="flex gap-1 items-center"
-                      style={{ fontSize: 12 }}
+                      className="font-semibold"
+                      style={{ fontSize: 16, color: "white" }}
                     >
-                      <span className="text-white">Plan Type : </span>
-                      <span
-                        className="font-bold"
-                        style={{ textTransform: "capitalize" }}
-                      >
-                        {activePlan.length
-                          ? activePlan[0]?.planName?.split("_")[0]
-                          : " No Plan"}
-                      </span>
+                      {currentUser ? currentUser.phoneNumber : <>Guest</>}
                     </div>
-                    {/* <div className="pt-2 flex flex-col justify-stretch gap-2">
-                      <button
-                        className="font-semibold text-xs justify-center items-center bg-white text-[#00969A] rounded-lg"
-
-                        // onClick={() => dispatch(open())}
-                      >
-                        Upgrade
-                      </button>
-                      <button
-                        className="font-semibold text-xs justify-center items-center bg-white text-[#00969A] rounded-lg"
-                      >
-                        End Subscription
-                      </button>
-                    </div> */}
                   </div>
-                ) : (
+                  <div
+                    className="flex gap-1 items-center"
+                    style={{ fontSize: 12 }}
+                  >
+                    <span className="text-white">Plan Type : </span>
+                    <span className="font-bold uppercase">
+                      {currentUser?.plan[0]?.planName?.split("_")[0]}
+                    </span>
+                  </div>
+                  {currentUser?.plan[0]?.planName === "FREE" ? (
+                    <TimerComponent />
+                  ) : null}
+                </div>
+                {/* ) : (
                   <CircularProgress style={{ padding: 10, color: "white" }} />
-                )}
+                )} */}
               </div>
               <div className="w-full px-1">
                 <button
@@ -119,7 +104,7 @@ const SocketSidebar = () => {
                 </button>
               </div>
               <div className="bg-[#2D2D2D] flex-1 h-full overflow-auto pt-2 px-2 m-1 rounded-lg ">
-                <UserSessions model="legalGPT" jwt={currentUser?.jwt} />
+                <UserSessions model="legalGPT" jwt={currentUser.jwt} />
               </div>
               <div
                 onClick={() => {

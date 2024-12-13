@@ -23,7 +23,7 @@ export default function AuthWall() {
       callbackUrl: pathname,
     }).toString();
     // navigate(`/login?${searchParams}`);
-    navigate("/");
+    window.open("http://localhost:4000/");
   };
 
   useEffect(() => {

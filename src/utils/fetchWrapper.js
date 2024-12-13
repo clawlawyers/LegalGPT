@@ -50,7 +50,7 @@ function handleResponse(response) {
       store.dispatch(logout());
       store.dispatch(setAutoLogout());
       console.log("asdddddddddddddddddd");
-      window.location.replace("/login");
+      window.location.replace("/");
     }
   }
   console.log("asdddddddddddddddddd");
