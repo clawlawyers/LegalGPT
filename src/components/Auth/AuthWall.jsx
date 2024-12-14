@@ -4,6 +4,7 @@ import { useAuthState } from "../../hooks/useAuthState";
 import { useLocation, Outlet, useNavigate, Link } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Box, Button, Modal, Typography } from "@mui/material";
+import { CLAW_ENDPOINT } from "../../utils/endpointUtils";
 // import { ClearIcon } from "@mui/x-date-pickers";
 // import { close } from "../features/popup/popupSlice";
 
@@ -23,7 +24,7 @@ export default function AuthWall() {
       callbackUrl: pathname,
     }).toString();
     // navigate(`/login?${searchParams}`);
-    window.open("http://localhost:4000/");
+    window.open(`${CLAW_ENDPOINT}`, "_self");
   };
 
   useEffect(() => {

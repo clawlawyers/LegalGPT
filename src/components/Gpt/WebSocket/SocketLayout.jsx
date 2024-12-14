@@ -9,9 +9,13 @@ const SocketLayout = () => {
   const BATCH_INTERVAL = 60 * 1000;
 
   const currentUser = useSelector((state) => state.auth.user);
-  console.log(currentUser);
+  // console.log(currentUser);
 
   const currentUserRef = useRef(currentUser);
+
+  useEffect(() => {
+    currentUserRef.current = currentUser;
+  }, [currentUser]);
 
   const updateEngagementTime = useCallback(async () => {
     try {

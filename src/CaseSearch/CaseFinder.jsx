@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -21,6 +21,7 @@ import { setPlan, setToken } from "../reducers/gptSlice";
 import moment from "moment";
 import { close, open } from "../reducers/popupSlice";
 import { Helmet } from "react-helmet";
+import TimerComponent from "../components/Gpt/WebSocket/TimerComponent";
 
 const courts = [
   "Supreme Court of India",
@@ -46,11 +47,19 @@ export default function CaseFinder({
   const [endDate, setEndDate] = useState(moment("19-sep-20"));
   const [result, setResult] = useState([]);
 
+  const BATCH_INTERVAL = 60 * 1000;
+
   const currentUser = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const isOpen = useSelector((state) => state.popup.open);
   const handlePopupClose = useCallback(() => dispatch(close()), [dispatch]);
   const [selectedCourts, setSelectedCourts] = useState([]);
+
+  const currentUserRef = useRef(currentUser);
+
+  useEffect(() => {
+    currentUserRef.current = currentUser;
+  }, [currentUser]);
 
   const handleCourtChange = useCallback((event) => {
     const {
@@ -111,9 +120,47 @@ export default function CaseFinder({
     }
   }
 
+  const updateEngagementTime = useCallback(async () => {
+    try {
+      await axios.post(
+        `${NODE_API_ENDPOINT}/gpt/storeUsedTime`,
+        {
+          // engagementData
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${currentUser.jwt}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error updating engagement time:", error);
+    }
+  }, []);
+
+  const flushQueue = useCallback(() => {
+    const user = currentUserRef.current;
+    if (user) {
+      updateEngagementTime();
+    }
+  }, [updateEngagementTime]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      flushQueue();
+    }, BATCH_INTERVAL);
+
+    return () => {
+      clearInterval(interval);
+      flushQueue();
+    };
+  }, [flushQueue]);
+
   return (
     <div className=" flex flex-col gap-2 pt-20">
       <div className="flex flex-col justify-center items-center">
+        {currentUser?.plan[0]?.planName === "FREE" ? <TimerComponent /> : null}
         <p className="text-4xl text-white font-bold m-0">
           Find Legal Cases With
         </p>

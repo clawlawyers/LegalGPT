@@ -3,6 +3,10 @@ import countDown from "../../../assets/icons/countdown.png";
 import { Modal } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../reducers/authSlice";
+import {
+  CLAW_ENDPOINT,
+  CLAW_PRICING_ENDPOINT,
+} from "../../../utils/endpointUtils";
 
 const TimerComponent = React.memo(() => {
   const currentUser = useSelector((state) => state.auth.user);
@@ -38,11 +42,13 @@ const TimerComponent = React.memo(() => {
     return () => clearInterval(timer);
   }, []);
 
-  //   useEffect(() => {
-  //     if (slotTimeInterval < new Date().getHours()) {
-  //       setCountDownOver(true);
-  //     }
-  //   });
+  const handleExit = () => {
+    window.open(`${CLAW_ENDPOINT}`, "_self");
+  };
+
+  const handleBuyPlans = () => {
+    window.open(`${CLAW_PRICING_ENDPOINT}`, "_self");
+  };
 
   return (
     <>
@@ -82,14 +88,14 @@ const TimerComponent = React.memo(() => {
           <div className="flex justify-center gap-5">
             <button
               style={{ border: "1px solid white", width: "100%" }}
-              //   onClick={() => EndSessionToCourtroom()}
+              onClick={handleExit}
               //   className="border-2 border-white rounded-lg py-2 px-8"
             >
               Exit To Homepage
             </button>
             <button
               style={{ border: "1px solid white", width: "100%" }}
-              //   onClick={() => setFeedbackForm(true)}
+              onClick={handleBuyPlans}
             >
               Buy A Plan
             </button>
