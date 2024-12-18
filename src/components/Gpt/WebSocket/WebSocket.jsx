@@ -90,10 +90,11 @@ const highCourtArr = [
 const WebSocketComponent = () => {
   const [promptsArr, setPromptsArr] = useState([]);
   const [message, setMessage] = useState("");
+  const [referenceMessage, setReferenceMessage] = useState("");
   const [socket, setSocket] = useState(null);
-  const [displayedText, setDisplayedText] = useState("");
-  const typingSpeed = 100;
+  const [referenceSocket, setReferenceSocket] = useState(null);
   const [index, setIndex] = useState(0);
+  const [referenceIndex, setReferenceIndex] = useState(0);
   const [inputText, setInputText] = useState("");
   const [sessionId, setSessionId] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
@@ -120,6 +121,11 @@ const WebSocketComponent = () => {
   const [refSupremeCase, setRefSupremeCase] = useState(null);
   const [supremeCourtLoading, setSupremeCourtLoading] = useState(false);
   const [fileSubmitLoading, setFileSubmitLoading] = useState(false);
+
+  const [summery, setsummery] = useState("");
+  const [summeryMessage, setSummeryMessage] = useState("");
+  const [summerySocket, setSummerySocket] = useState(null);
+  const [summeryIndex, setSummeryIndex] = useState(0);
 
   const currentUser = useSelector((state) => state.auth.user);
   const promptsArrSelector = useSelector((state) => state?.prompt?.prompts);
@@ -334,7 +340,6 @@ const WebSocketComponent = () => {
 
     const typeText = () => {
       if (index < message.length) {
-        setDisplayedText((prev) => prev + message[index]);
         setIndex((prev) => prev + 1);
         dispatch(setNewPromptData({ message: message[index] }));
 
@@ -649,39 +654,121 @@ const WebSocketComponent = () => {
     },
   });
 
-  const handleShowRelevantAct = async () => {
+  useEffect(() => {
+    const newSocket = new WebSocket(
+      "wss://api.clawlaw.in:8000/api/v1/gpt/reference"
+    );
+
+    newSocket.onopen = () => {
+      console.log("WebSocket connection established");
+    };
+
+    newSocket.onmessage = (event) => {
+      // console.log(event.data);
+      const formattedData = event.data
+        .replaceAll("\\\\n\\\\n", "<br/>")
+        .replaceAll("\\\\n", "<br/>")
+        .replaceAll("\\n\\n", "<br/>")
+        .replaceAll("\\n", "<br/>")
+        .replaceAll("\n", "<br/>")
+        .replaceAll(/\*([^*]+)\*/g, "<strong>$1</strong>")
+        .replaceAll("\\", "")
+        .replaceAll('"', "")
+        .replaceAll(":", " :")
+        .replaceAll("#", "")
+        .replaceAll("**", "")
+        .replaceAll("*", "");
+      setReferenceMessage((prevMessages) => [...prevMessages, formattedData]);
+    };
+
+    newSocket.onclose = (event) => {
+      console.log(event);
+      console.log("Closed code:", event.code);
+      console.log("Close reason:", event.reason);
+      console.log("WebSocket connection closed");
+    };
+
+    newSocket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    setReferenceSocket(newSocket);
+
+    return () => {
+      newSocket.close();
+    };
+  }, []);
+
+  const sendReferenceMessage = (e, message) => {
     if (refRelevantCase) {
       return;
     }
     setRelevantCaseLoading(true);
     setShowRelevantCase(true);
-    //api call
-
-    try {
-      const fetchData = await fetch(
-        `${NODE_API_ENDPOINT}/gpt/session/relevantAct`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${currentUser.jwt}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ sessionId: params.sessionId }),
-        }
-      );
-
-      const response = await fetchData.json();
-
-      console.log("");
-      const responsetext = formatText(response.data.references);
-      setRefRelevantCase(md.render(responsetext));
-    } catch (error) {
-      console.log(error);
-      toast.error(error.message);
-    } finally {
-      setRelevantCaseLoading(false);
+    e.preventDefault();
+    if (referenceSocket && referenceSocket.readyState === WebSocket.OPEN) {
+      // console.log(message);
+      referenceSocket.send(JSON.stringify({ context: message }));
+      // dispatch(setPromptLoading());
     }
   };
+
+  useEffect(() => {
+    if (referenceMessage.length === 0) return;
+
+    const typeText = () => {
+      if (referenceIndex < referenceMessage.length) {
+        setRefRelevantCase(
+          (prev) => (prev || "") + referenceMessage[referenceIndex]
+        );
+        setReferenceIndex((prev) => prev + 1);
+
+        if (referenceMessage[referenceIndex] === "<EOS>") {
+          console.log("Message is Finished");
+          setRelevantCaseLoading(false);
+        }
+      }
+    };
+
+    if (referenceIndex < referenceMessage.length) {
+      const animationFrameId = requestAnimationFrame(typeText);
+      return () => cancelAnimationFrame(animationFrameId);
+    }
+  }, [referenceIndex, referenceMessage]);
+
+  // const handleShowRelevantAct = async () => {
+  //   if (refRelevantCase) {
+  //     return;
+  //   }
+  //   setRelevantCaseLoading(true);
+  //   setShowRelevantCase(true);
+  //   //api call
+
+  //   try {
+  //     const fetchData = await fetch(
+  //       `${NODE_API_ENDPOINT}/gpt/session/relevantAct`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           Authorization: `Bearer ${currentUser.jwt}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ sessionId: params.sessionId }),
+  //       }
+  //     );
+
+  //     const response = await fetchData.json();
+
+  //     console.log("");
+  //     const responsetext = formatText(response.data.references);
+  //     setRefRelevantCase(md.render(responsetext));
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error(error.message);
+  //   } finally {
+  //     setRelevantCaseLoading(false);
+  //   }
+  // };
 
   const handleShowSupremeCourtJudgements = async () => {
     if (refSupremeCase) {
@@ -717,6 +804,87 @@ const WebSocketComponent = () => {
       setSupremeCourtLoading(false);
     }
   };
+
+  useEffect(() => {
+    const newSocket = new WebSocket(
+      "wss://api.clawlaw.in:8000/api/v1/overview/case/view_overview_gpt"
+    );
+
+    newSocket.onopen = () => {
+      console.log("Summery WebSocket connection established");
+    };
+
+    newSocket.onmessage = (event) => {
+      // console.log(event.data);
+      const formattedData = event.data
+        .replaceAll("\\\\n\\\\n", "<br/>")
+        .replaceAll("\\\\n", "<br/>")
+        .replaceAll("\\n\\n", "<br/>")
+        .replaceAll("\\n", "<br/>")
+        .replaceAll("\n", "<br/>")
+        .replaceAll(/\*([^*]+)\*/g, "<strong>$1</strong>")
+        .replaceAll("\\", "")
+        .replaceAll('"', "")
+        .replaceAll(":", " :")
+        .replaceAll("#", "")
+        .replaceAll("**", "")
+        .replaceAll("*", "");
+      setSummeryMessage((prevMessages) => [...prevMessages, formattedData]);
+    };
+
+    newSocket.onclose = (event) => {
+      console.log(event);
+      console.log("Closed code:", event.code);
+      console.log("Close reason:", event.reason);
+      console.log("WebSocket connection closed");
+    };
+
+    newSocket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    setSummerySocket(newSocket);
+
+    return () => {
+      newSocket.close();
+    };
+  }, []);
+
+  const sendSummaryMessage = (folderId, caseId) => {
+    if (summery) {
+      return;
+    }
+    if (summerySocket && summerySocket.readyState === WebSocket.OPEN) {
+      // console.log(message);
+      summerySocket.send(
+        JSON.stringify({
+          folder_id: folderId,
+          case_id: caseId,
+        })
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (summeryMessage.length === 0) return;
+
+    const typeText = () => {
+      if (summeryIndex < summeryMessage.length) {
+        setsummery((prev) => (prev || "") + summeryMessage[summeryIndex]);
+        setSummeryIndex((prev) => prev + 1);
+
+        if (summeryMessage[summeryIndex] === "<EOS>") {
+          console.log("Message is Finished");
+          // setIsLoading(false);
+        }
+      }
+    };
+
+    if (summeryIndex < summeryMessage.length) {
+      const animationFrameId = requestAnimationFrame(typeText);
+      return () => cancelAnimationFrame(animationFrameId);
+    }
+  }, [summeryIndex, summeryMessage]);
 
   const resetOnEveryContext = () => {
     setInputText("");
@@ -832,7 +1000,15 @@ const WebSocketComponent = () => {
                                   )}
                                 </p>
                                 <p
-                                  onClick={handleShowRelevantAct}
+                                  // onClick={handleShowRelevantAct}
+                                  onClick={(e) => {
+                                    sendReferenceMessage(
+                                      e,
+                                      promptsArr[index].text +
+                                        " " +
+                                        promptsArr[index - 1].text
+                                    );
+                                  }}
                                   className="m-0 border-2 border-white text-white max-w-[7rem] rounded-lg py-1 px-3 cursor-pointer flex justify-center items-center bg-[#018081] hover:bg-opacity-75"
                                 >
                                   {relevantCaseLoading ? (
@@ -1071,6 +1247,9 @@ const WebSocketComponent = () => {
                               date={relatedCase.Date}
                               court={relatedCase.court}
                               keyIndex={index}
+                              sendSummaryMessage={sendSummaryMessage}
+                              summery={summery}
+                              setsummery={setsummery}
                             />
                           );
                         })}

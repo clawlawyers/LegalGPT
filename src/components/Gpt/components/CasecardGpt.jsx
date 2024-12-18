@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { open } from "../../../reducers/popupSlice";
 import markdownit from "markdown-it";
 import { activePlanFeatures } from "../../../hooks/useAuthState";
+import { Close } from "@mui/icons-material";
 
 const courtIdMapping = {
   "Supreme Court of India": "1bgi-zbCWObiTNjkegNXryni4ZJzZyCFV",
@@ -53,6 +54,9 @@ export function CasecardGpt({
   citations,
   caseId,
   keyIndex,
+  sendSummaryMessage,
+  summery,
+  setsummery,
 }) {
   // console.log(date);
   const md = markdownit({
@@ -92,18 +96,19 @@ export function CasecardGpt({
     },
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [summery, setsummery] = useState("");
+  // const [summery, setsummery] = useState("");
   const [openCase, setOpenCase] = useState(false);
   const [content, setContent] = useState("");
-  const jwt = useSelector((state) => state.auth.user.jwt);
   const [loading, setLoading] = useState(false);
-  // const { token } = useSelector((state) => state.gpt);
+  const [isSummaryOpen, setIsSummaryOpen] = useState(false);
+  const [activePlan, setActivePlan] = useState([]);
+
+  const [openSummary, setOpenSummary] = useState(false);
+
+  const jwt = useSelector((state) => state.auth.user.jwt);
   const { plan } = useSelector((state) => state.gpt);
 
   const dispatch = useDispatch();
-
-  const [isSummaryOpen, setIsSummaryOpen] = useState(false);
-  const [activePlan, setActivePlan] = useState([]);
 
   const handlePopupOpen = useCallback(() => dispatch(open()), []);
 
@@ -146,15 +151,23 @@ export function CasecardGpt({
     }
   };
 
-  const handleSummaryToggle = async () => {
-    setIsSummaryOpen(!isSummaryOpen);
-    if (!isSummaryOpen) {
-      handleSummary();
-    }
+  // const handleSummaryToggle = async () => {
+  //   setIsSummaryOpen(!isSummaryOpen);
+  //   if (!isSummaryOpen) {
+  //     // handleSummary();
+  //     sendReferenceMessage();
+  //   }
+  // };
+
+  const handleSummaryToggle = () => {
+    setOpenSummary(true);
+    sendSummaryMessage(
+      new Date(date) < new Date("16-July-2024")
+        ? courtIdMapping[court]
+        : newCourtIdMapping[court],
+      caseId
+    );
   };
-  // useEffect(() => {
-  //   handleSummary();
-  // }, []);
 
   async function handleOpen() {
     try {
@@ -249,11 +262,7 @@ export function CasecardGpt({
           View document
         </button>
         <button
-          onClick={
-            activePlan[0]?.plan?.AISummerizer
-              ? handleSummaryToggle
-              : handlePopupOpen
-          }
+          onClick={handleSummaryToggle}
           style={{
             border: "none",
             padding: "10px 12px",
@@ -269,7 +278,8 @@ export function CasecardGpt({
             cursor: "pointer",
           }}
         >
-          {isSummaryOpen ? "Hide summary" : "View summary"}
+          {/* {isSummaryOpen ? "Hide summary" : "View summary"} */}
+          View Summery
         </button>
       </div>
       {/* </div> */}
@@ -379,6 +389,63 @@ export function CasecardGpt({
                 })}
               </div>
             )}
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        open={openSummary}
+        onClose={() => {
+          setOpenSummary(false);
+          setsummery("");
+        }}
+        aria-labelledby="child-modal-title"
+      >
+        <div
+          className={Styles.scrollable}
+          style={{
+            backgroundColor: "white",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            width: "80%",
+            height: "90%",
+            color: "black",
+            borderRadius: 10,
+            // overflowY: "scroll",
+            padding: 10,
+            transform: "translate(-50%, -50%)",
+            boxShadow: 24,
+          }}
+        >
+          <div className="w-full h-full rounded-lg p-2 flex flex-col border-2 border-black text-black ">
+            <div className="flex justify-between items-center">
+              <h1 className="font-semibold">Summery Details</h1>
+              <Close
+                className="cursor-pointer"
+                onClick={() => {
+                  setOpenSummary(false);
+                  setsummery("");
+                }}
+              />
+            </div>
+            <div className="flex-1 h-full">
+              {summery === "" ? (
+                <div className="h-full flex flex-col items-center justify-center">
+                  <CircularProgress size={40} sx={{ color: "black" }} />
+                </div>
+              ) : (
+                <div className="h-[95%] flex flex-col overflow-auto">
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: summery,
+                    }}
+                    className="text-black"
+                  >
+                    {/* {summery} */}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </Modal>

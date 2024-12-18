@@ -30,7 +30,7 @@
 }
 
 .backdropImg {
-  background-image: url("../../assets/images/button-gradient.png");
+  background-image: url("../../../assets/icons/button-gradient.png");
   background-repeat: no-repeat;
   background-size: cover;
 }

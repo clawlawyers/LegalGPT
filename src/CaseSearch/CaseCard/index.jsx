@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Modal from "@mui/material/Modal";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -9,6 +9,7 @@ import Styles from "./index.module.css";
 import { useDispatch } from "react-redux";
 // import { open } from "../../features/popup/popupSlice";
 import toast from "react-hot-toast";
+import { Close } from "@mui/icons-material";
 
 const courtIdMapping = {
   "Supreme Court of India": "1bgi-zbCWObiTNjkegNXryni4ZJzZyCFV",
@@ -46,9 +47,22 @@ const newCourtIdMapping = {
   "Rajasthan High Court": "18VP7y7NKx8jwSq87T2iSUEh4KnDyImOX",
 };
 
-export function CaseCard({ name, date, court, citations, caseId, query }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [summery, setsummery] = useState("");
+function CaseCard({
+  name,
+  date,
+  court,
+  citations,
+  caseId,
+  query,
+  sendReferenceMessage,
+  isLoading,
+  setIsLoading,
+  summery,
+  setsummery,
+  referenceSocket,
+}) {
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [summery, setsummery] = useState("");
   const [openCase, setOpenCase] = useState(false);
   const [content, setContent] = useState("");
   const jwt = useSelector((state) => state.auth.user.jwt);
@@ -58,49 +72,81 @@ export function CaseCard({ name, date, court, citations, caseId, query }) {
   // const handlePopupOpen = useCallback(() => dispatch(open()), []);
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
 
-  const handleSummary = async () => {
-    if (summery) {
-      return; // If content is already fetched, don't fetch again
-    }
-    try {
-      setIsLoading(true);
-      const response = await fetch(
-        `${NODE_API_ENDPOINT}/gpt/case/summeryDetails`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            folderId:
-              new Date(date) < new Date("16-July-2024")
-                ? courtIdMapping[court]
-                : newCourtIdMapping[court],
-            caseId,
-            query,
-          }),
-        }
-      );
-      const data = await response.json();
-      setsummery(data.content);
-      setIsLoading(false);
-    } catch (error) {
-      toast.error("Summery not found");
-      console.log(error);
-      setIsLoading(false);
-    }
-  };
+  const [openSummary, setOpenSummary] = useState(false);
 
-  const handleSummaryToggle = async () => {
-    setIsSummaryOpen(!isSummaryOpen);
-    if (!isSummaryOpen) {
-      handleSummary();
-    }
+  // const handleSummary = async () => {
+  //   if (summery) {
+  //     return; // If content is already fetched, don't fetch again
+  //   }
+  //   try {
+  //     setIsLoading(true);
+  //     const response = await fetch(
+  //       `${NODE_API_ENDPOINT}/gpt/case/summeryDetails`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           Authorization: `Bearer ${jwt}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           folderId:
+  //             new Date(date) < new Date("16-July-2024")
+  //               ? courtIdMapping[court]
+  //               : newCourtIdMapping[court],
+  //           caseId,
+  //           query,
+  //         }),
+  //       }
+  //     );
+  //     const data = await response.json();
+  //     setsummery(data.content);
+  //     setIsLoading(false);
+  //   } catch (error) {
+  //     toast.error("Summery not found");
+  //     console.log(error);
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // const sendReferenceMessage = (folderId, caseId) => {
+  //   if (summery) {
+  //     return;
+  //   }
+  //   setIsLoading(true);
+  //   if (referenceSocketRef.current && referenceSocketRef.current.readyState === WebSocket.OPEN) {
+  //     referenceSocketRef.current.send(
+  //       JSON.stringify({
+  //         folderId,
+  //         caseId,
+  //         query,
+  //       })
+  //     );
+  //   }
+  // };
+
+  // const handleSummaryToggle = async () => {
+  //   setIsSummaryOpen(!isSummaryOpen);
+  //   if (!isSummaryOpen) {
+  //     // handleSummary();
+  //     sendReferenceMessage(
+  //       new Date(date) < new Date("16-July-2024")
+  //         ? courtIdMapping[court]
+  //         : newCourtIdMapping[court],
+  //       caseId
+  //     );
+  //     // sendReferenceMessage();
+  //   }
+  // };
+
+  const handleSummaryToggle = () => {
+    setOpenSummary(true);
+    sendReferenceMessage(
+      new Date(date) < new Date("16-July-2024")
+        ? courtIdMapping[court]
+        : newCourtIdMapping[court],
+      caseId
+    );
   };
-  // useEffect(() => {
-  //   handleSummary();
-  // }, []);
 
   async function handleOpen() {
     try {
@@ -206,22 +252,22 @@ export function CaseCard({ name, date, court, citations, caseId, query }) {
           cursor: "pointer",
         }}
       >
-        {isSummaryOpen ? "Hide summary" : "View summary"}
+        {/* {isSummaryOpen ? "Hide summary" : "View summary"} */}
+        View Summery
       </button>
       <div>
         {isSummaryOpen && (
           <>
-            {isLoading ? (
+            {isLoading && (
               <>
                 <CircularProgress style={{ color: "white" }} />
               </>
-            ) : (
-              <>
-                <hr />
-                <p>Here is the summary content.</p>
-                <p style={{ color: "white" }}>{summery}</p>
-              </>
             )}
+            <>
+              <hr />
+              <p>Here is the summary content.</p>
+              <p style={{ color: "white" }}>{summery}</p>
+            </>
           </>
         )}
       </div>
@@ -293,6 +339,65 @@ export function CaseCard({ name, date, court, citations, caseId, query }) {
           </div>
         </div>
       </Modal>
+      <Modal
+        open={openSummary}
+        onClose={() => {
+          setOpenSummary(false);
+          setsummery("");
+        }}
+        aria-labelledby="child-modal-title"
+      >
+        <div
+          className={Styles.scrollable}
+          style={{
+            backgroundColor: "white",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            width: "80%",
+            height: "90%",
+            color: "black",
+            borderRadius: 10,
+            // overflowY: "scroll",
+            padding: 10,
+            transform: "translate(-50%, -50%)",
+            boxShadow: 24,
+          }}
+        >
+          <div className="w-full h-full rounded-lg p-2 flex flex-col border-2 border-black text-black ">
+            <div className="flex justify-between items-center">
+              <h1 className="font-semibold">Summery Details</h1>
+              <Close
+                className="cursor-pointer"
+                onClick={() => {
+                  setOpenSummary(false);
+                  setsummery("");
+                }}
+              />
+            </div>
+            <div className="flex-1 h-full">
+              {summery === "" ? (
+                <div className="h-full flex flex-col items-center justify-center">
+                  <CircularProgress size={40} sx={{ color: "black" }} />
+                </div>
+              ) : (
+                <div className="h-[95%] flex flex-col overflow-auto">
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: summery,
+                    }}
+                    className="text-black"
+                  >
+                    {/* {summery} */}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
+
+export default React.memo(CaseCard);

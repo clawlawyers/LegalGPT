@@ -13,7 +13,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Button, FormHelperText, InputLabel, Modal, Chip } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import LockIcon from "@mui/icons-material/Lock";
-import { CaseCard } from "./CaseCard";
+import CaseCard from "./CaseCard";
 import Styles from "./index.module.css";
 import { SearchOutlined } from "@mui/icons-material";
 import { NODE_API_ENDPOINT } from "../utils/utils";
@@ -22,6 +22,7 @@ import moment from "moment";
 import { close, open } from "../reducers/popupSlice";
 import { Helmet } from "react-helmet";
 import TimerComponent from "../components/Gpt/WebSocket/TimerComponent";
+import axios from "axios";
 
 const courts = [
   "Supreme Court of India",
@@ -54,6 +55,12 @@ export default function CaseFinder({
   const isOpen = useSelector((state) => state.popup.open);
   const handlePopupClose = useCallback(() => dispatch(close()), [dispatch]);
   const [selectedCourts, setSelectedCourts] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [summery, setsummery] = useState("");
+  const [referenceMessage, setReferenceMessage] = useState("");
+  const [referenceSocket, setReferenceSocket] = useState(null);
+  const [referenceIndex, setReferenceIndex] = useState(0);
 
   const currentUserRef = useRef(currentUser);
 
@@ -156,6 +163,95 @@ export default function CaseFinder({
       flushQueue();
     };
   }, [flushQueue]);
+
+  useEffect(() => {
+    console.log("triggered");
+    const newSocket = new WebSocket(
+      "wss://api.clawlaw.in:8000/api/v1/overview/case/view_overview"
+    );
+
+    newSocket.onopen = () => {
+      console.log("WebSocket connection established");
+    };
+
+    newSocket.onmessage = (event) => {
+      console.log(event.data);
+      const formattedData = event.data
+        .replaceAll("\\\\n\\\\n", "<br/>")
+        .replaceAll("\\\\n", "<br/>")
+        .replaceAll("\\n\\n", "<br/>")
+        .replaceAll("\\n", "<br/>")
+        .replaceAll("\n", "<br/>")
+        .replaceAll(/\*([^*]+)\*/g, "<strong>$1</strong>")
+        .replaceAll("\\", "")
+        .replaceAll('"', "")
+        .replaceAll(":", " :")
+        .replaceAll("#", "")
+        .replaceAll("**", "")
+        .replaceAll("*", "");
+      setReferenceMessage((prevMessages) => [...prevMessages, formattedData]);
+    };
+
+    newSocket.onclose = (event) => {
+      // console.log(event);
+      console.log("Closed code:", event.code);
+      console.log("Close reason:", event.reason);
+      console.log("WebSocket connection closed");
+    };
+
+    newSocket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    setReferenceSocket(newSocket);
+
+    return () => {
+      newSocket.close();
+    };
+  }, []);
+
+  const sendReferenceMessage = (folderId, caseId) => {
+    if (summery) {
+      return;
+    }
+    setIsLoading(true);
+    console.log({
+      folder_id: folderId,
+      case_id: caseId,
+      search_query: query,
+    });
+    if (referenceSocket && referenceSocket.readyState === WebSocket.OPEN) {
+      // console.log(message);
+      referenceSocket.send(
+        JSON.stringify({
+          folder_id: folderId,
+          case_id: caseId,
+          search_query: query,
+        })
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (referenceMessage.length === 0) return;
+
+    const typeText = () => {
+      if (referenceIndex < referenceMessage.length) {
+        setsummery((prev) => (prev || "") + referenceMessage[referenceIndex]);
+        setReferenceIndex((prev) => prev + 1);
+
+        if (referenceMessage[referenceIndex] === "<EOS>") {
+          console.log("Message is Finished");
+          setIsLoading(false);
+        }
+      }
+    };
+
+    if (referenceIndex < referenceMessage.length) {
+      const animationFrameId = requestAnimationFrame(typeText);
+      return () => cancelAnimationFrame(animationFrameId);
+    }
+  }, [referenceIndex, referenceMessage]);
 
   return (
     <div className=" flex flex-col gap-2 pt-20">
@@ -420,6 +516,12 @@ export default function CaseFinder({
                     court={relatedCase.court}
                     key={relatedCase.id}
                     query={query}
+                    sendReferenceMessage={sendReferenceMessage}
+                    summery={summery}
+                    setsummery={setsummery}
+                    isLoading={isLoading}
+                    setIsLoading={setIsLoading}
+                    referenceSocket={referenceSocket}
                   />
                 ))}
               </div>
