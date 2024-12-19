@@ -401,13 +401,14 @@ export function CasecardGpt({
         aria-labelledby="child-modal-title"
       >
         <div
-          className={Styles.scrollable}
+          // className={Styles.scrollable}
+          className="w-[80%] md:w-[60%]"
           style={{
             backgroundColor: "white",
             position: "absolute",
             top: "50%",
             left: "50%",
-            width: "80%",
+            // width: "60%",
             height: "90%",
             color: "black",
             borderRadius: 10,

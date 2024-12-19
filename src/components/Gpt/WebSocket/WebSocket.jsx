@@ -1122,7 +1122,10 @@ const WebSocketComponent = () => {
                               {anchorElAudio && editIndex == index ? (
                                 <AudioPlayer
                                   token={currentUser.jwt}
-                                  text={promptsArr[index].text}
+                                  text={promptsArr[index].text.replaceAll(
+                                    "<br/>",
+                                    ""
+                                  )}
                                   setAnchorEl={setAnchorElAudio}
                                 />
                               ) : (
