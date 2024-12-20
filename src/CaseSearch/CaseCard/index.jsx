@@ -11,21 +11,60 @@ import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { Close } from "@mui/icons-material";
 
+// const courtIdMapping = {
+//   "Supreme Court of India": "1bgi-zbCWObiTNjkegNXryni4ZJzZyCFV",
+//   "Chattisgarh High Court": "10WjvWkkE5P9AZJTdBuK3rOB3FBfSuPON",
+//   "Sikkim High Court": "1LRcl09Lc2psq3kFjZ92oYEBV54Bgdr4q",
+//   "Uttarakhand High Court": "16ghA911ENkOJ5GDa-317ncVA_egwsy6J",
+//   "Calcutta High Court": "1CTxPb31Kvj-iyUxef5THaTL7pzJpXsE0",
+//   "Kerela High Court": "1ss5iK8rcrEzjWUjUl5Cg2qhKunTQX4II",
+//   "Karnataka High Court": "1k8EEGMnzCbdyTKsNVGxboa4wqRiW2SNi",
+//   "Jammu and Kashmir High Court": "15PrnIvUGB4OdKzSjvGtdpyVLLPlBEZ2M",
+//   "Jharkhand High Court": "1cKhGvZGPJpVVA5KFW1MH0PTgSTjlPV_5",
+//   "Delhi High Court": "1-4KMCL-J2HDD6RllAZbARzBJccxQPTYC",
+//   "Delhi District Court": "1PSrAbXpBsoUvqjV_ssoca3Xzzk71qP4a",
+//   "Madhya Pradesh High Court": "1exastQPw80VSb359G8xournBF1MPShdn",
+//   "Allahabad High Court": "1qpWWufkZ4ciCskmJ3xPHLe72Z8oKWjcO",
+//   "Gujarat High Court": "1NyOxx5lBZ-rFy3wtwdOlepTog668HUwJ",
+//   "Rajasthan High Court": "153TCPW0SuDtXQzlgLUtqES3uwVUkaMtu",
+// };
+
+// const newCourtIdMapping = {
+//   "Supreme Court of India": "1xe5a_r6_5bm9QO3_znBo9Y5ly7xpNOdl",
+//   "Chattisgarh High Court": "1e7GbahAfohsiF7w1_nCKWc7gr69ctOKO",
+//   "Sikkim High Court": "1BPtm3lqfX-PCErzoNByDwH0xlHpBKHtG",
+//   "Uttarakhand High Court": "1Cfd6hntom_pLJMv4_GHKec0oZAe2DIGu",
+//   "Calcutta High Court": "13kZvkMfQUqqE4TJHk1zT0R9EJ4vsm7Y_",
+//   "Kerela High Court": "18IEun-9TPt0tywiGmuKheHWmdkJ6N7PC",
+//   "Karnataka High Court": "1b3C4lv_sASf7Et4wS2me_dSp1T08NN-e",
+//   "Jammu and Kashmir High Court": "1xroQ7bjQPDiTpPWfAi5YDbMeM1MPlNOH",
+//   "Jharkhand High Court": "1iQOmzXhtTPa2G7C-pGwcVorkrUFBATTh",
+//   "Delhi High Court": "1uLtctLYbGYy26A3KbUs8Wh2SwMq6WbpF",
+//   "Delhi District Court": "1NCDpBZGjKIGEYaq-7JPX2rTNDwi48YBv",
+//   "Madhya Pradesh High Court": "1qFppmDox-fKOcPFW4FGedfCsIsOWUF8i",
+//   "Allahabad High Court": "1e_EdyqEQkCEW3pXFEo9eFweVGYoiwQRW",
+//   "Gujarat High Court": "1GWbg3GnvbseAGRfCvQt6ImhXgsg4ZfXl",
+//   "Rajasthan High Court": "18VP7y7NKx8jwSq87T2iSUEh4KnDyImOX",
+// };
+
 const courtIdMapping = {
-  "Supreme Court of India": "1bgi-zbCWObiTNjkegNXryni4ZJzZyCFV",
+  "Supreme Court of India": "1bgi-zbCWObiTNjkegNXryni4ZJzZyCFV ",
   "Chattisgarh High Court": "10WjvWkkE5P9AZJTdBuK3rOB3FBfSuPON",
   "Sikkim High Court": "1LRcl09Lc2psq3kFjZ92oYEBV54Bgdr4q",
   "Uttarakhand High Court": "16ghA911ENkOJ5GDa-317ncVA_egwsy6J",
   "Calcutta High Court": "1CTxPb31Kvj-iyUxef5THaTL7pzJpXsE0",
   "Kerela High Court": "1ss5iK8rcrEzjWUjUl5Cg2qhKunTQX4II",
-  "Karnataka High Court": "1k8EEGMnzCbdyTKsNVGxboa4wqRiW2SNi",
+  "Karnataka High Court":
+    "1k8EEGMnzCbdyTKsNVGxboa4wqRiW2SNi, 12yzXXlf3hAxUAp1fmYTKCQrBV4O2TqwB, 1giA5ZiRlujgv1KwAEqBtH7-0wUi2I0qQ",
   "Jammu and Kashmir High Court": "15PrnIvUGB4OdKzSjvGtdpyVLLPlBEZ2M",
   "Jharkhand High Court": "1cKhGvZGPJpVVA5KFW1MH0PTgSTjlPV_5",
   "Delhi High Court": "1-4KMCL-J2HDD6RllAZbARzBJccxQPTYC",
   "Delhi District Court": "1PSrAbXpBsoUvqjV_ssoca3Xzzk71qP4a",
   "Madhya Pradesh High Court": "1exastQPw80VSb359G8xournBF1MPShdn",
-  "Allahabad High Court": "1qpWWufkZ4ciCskmJ3xPHLe72Z8oKWjcO",
-  "Gujarat High Court": "1NyOxx5lBZ-rFy3wtwdOlepTog668HUwJ",
+  "Allahabad High Court":
+    "1qpWWufkZ4ciCskmJ3xPHLe72Z8oKWjcO, 1--Ae2LBLKKeAJQ66PSXWwPqThK37csOk",
+  "Gujarat High Court":
+    "1NyOxx5lBZ-rFy3wtwdOlepTog668HUwJ, 1Hn_UM2BNWdJz_xHDeQox_3V8UE3HU89s",
   "Rajasthan High Court": "153TCPW0SuDtXQzlgLUtqES3uwVUkaMtu",
 };
 
@@ -38,10 +77,13 @@ const newCourtIdMapping = {
   "Kerela High Court": "18IEun-9TPt0tywiGmuKheHWmdkJ6N7PC",
   "Karnataka High Court": "1b3C4lv_sASf7Et4wS2me_dSp1T08NN-e",
   "Jammu and Kashmir High Court": "1xroQ7bjQPDiTpPWfAi5YDbMeM1MPlNOH",
+
   "Jharkhand High Court": "1iQOmzXhtTPa2G7C-pGwcVorkrUFBATTh",
   "Delhi High Court": "1uLtctLYbGYy26A3KbUs8Wh2SwMq6WbpF",
   "Delhi District Court": "1NCDpBZGjKIGEYaq-7JPX2rTNDwi48YBv",
+
   "Madhya Pradesh High Court": "1qFppmDox-fKOcPFW4FGedfCsIsOWUF8i",
+
   "Allahabad High Court": "1e_EdyqEQkCEW3pXFEo9eFweVGYoiwQRW",
   "Gujarat High Court": "1GWbg3GnvbseAGRfCvQt6ImhXgsg4ZfXl",
   "Rajasthan High Court": "18VP7y7NKx8jwSq87T2iSUEh4KnDyImOX",
