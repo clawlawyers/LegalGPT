@@ -1,15 +1,132 @@
-import React from "react";
-import { Outlet, useLocation, useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import FooterBanner from "../../FooterBanner/FooterBanner";
+import { useDispatch } from "react-redux";
+import {
+  setLoadUserSessions,
+  setMessageIdPromptData,
+  setPromptsArrAction,
+} from "../../reducers/promptSlice";
+import { NODE_API_ENDPOINT } from "../../utils/utils";
 
 const HomeLayout = () => {
+  const [searchParams] = useSearchParams();
+  console.log(searchParams);
   const params = useLocation();
-  if (params.search !== "") {
-    // console.log(true);
-    const setToken = params.search.split("user=")[1];
-    localStorage.setItem("token", setToken);
-  } else {
-    console.log(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  // console.log(params);
+
+  // const urlParams = new URLSearchParams(window.location.search);
+  // const encodedStringBtoA = urlParams.get("user");
+  // const decodedString = atob(encodedStringBtoA);
+  // const currentUser = JSON.parse(decodedString);
+  // console.log(currentUser);
+  // localStorage.setItem("token", currentUser.token);
+  // dispatch(setPromptsArrAction(currentUser.promptArr));
+  // navigate(currentUser.callbackUrl);
+
+  // if (params.search !== "") {
+  //   const setToken = params.search.split("user=")[1];
+  //   localStorage.setItem("token", setToken);
+  // } else {
+  //   console.log(false);
+  // }
+
+  // useEffect(()=>{
+  //   const urlParams = new URLSearchParams(window.location.search);
+  // const encodedStringBtoA = urlParams.get("user");
+  // const decodedString = atob(encodedStringBtoA);
+  // const currentUser = JSON.parse(decodedString);
+  // console.log(currentUser);
+  // localStorage.setItem("token", currentUser.token);
+  // dispatch(setPromptsArrAction(currentUser.promptArr));
+  // navigate(currentUser.callbackUrl);
+  // },[navigate, searchParams, currentUser])
+
+  useEffect(() => {
+    const callbackfunction = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const encodedStringBtoA = urlParams.get("user");
+      const decodedString = atob(encodedStringBtoA);
+      const currentUser = JSON.parse(decodedString);
+      localStorage.setItem("token", currentUser.token);
+      // if (currentUser) {
+      if (currentUser.prompt && currentUser.callbackUrl) {
+        if (currentUser.callbackUrl == "/gpt/socket") {
+          const res = await fetch(`${NODE_API_ENDPOINT}/gpt/session`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${currentUser.token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              prompt: currentUser.prompt,
+              model: "legalGPT",
+            }),
+          });
+          const { data } = await res.json();
+          console.log(data);
+          console.log("session id");
+
+          const promptArr = [
+            {
+              text: currentUser.prompt,
+              isDocument: null,
+              contextId: null,
+              isUser: true,
+              sessionId: data.id,
+            },
+            {
+              text: null,
+              isDocument: null,
+              contextId: null,
+              isUser: false,
+              sessionId: data.id,
+            },
+          ];
+
+          dispatch(setPromptsArrAction(promptArr));
+
+          navigate(`/gpt/socket/v1/${data.id}`);
+          setUserGptResponse(
+            {
+              text: currentUser.prompt,
+              isDocument: null,
+              contextId: null,
+              isUser: true,
+              sessionId: data.id,
+            },
+            currentUser.token
+          );
+          dispatch(setLoadUserSessions());
+        } else {
+          navigate(currentUser.callbackUrl);
+        }
+      } else navigate("/");
+      // }
+    };
+    callbackfunction();
+  }, [navigate, searchParams]);
+
+  async function setUserGptResponse(message, token) {
+    const res = await fetch(`${NODE_API_ENDPOINT}/gpt/session/appendMessage`, {
+      method: "POST",
+      body: JSON.stringify(message),
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const resData = await res.json();
+    // console.log(resData);
+    dispatch(setMessageIdPromptData({ index: 0, data: resData.data.id }));
   }
 
   return (

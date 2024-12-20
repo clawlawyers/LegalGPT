@@ -6,7 +6,7 @@ export const promptSlice = createSlice({
     prompts: [],
     loading: false,
     toggle: true,
-    loadHistory: false,
+    loadHistory: null,
     loadUserSession: false,
   },
 
@@ -56,7 +56,10 @@ export const promptSlice = createSlice({
       state.toggle = !state.toggle;
     },
     setPromptHistory(state, action) {
-      state.loadHistory = !state.loadHistory;
+      state.loadHistory = action.payload;
+    },
+    removePromptHistory(state, action) {
+      state.loadHistory = null;
     },
     setLoadUserSessions(state, action) {
       state.loadUserSession = !state.loadUserSession;
@@ -72,6 +75,7 @@ export const {
   setDataUsingIndex,
   setToggleMenu,
   setPromptHistory,
+  removePromptHistory,
   setLoadUserSessions,
   setMessageIdPromptData,
 } = promptSlice.actions;

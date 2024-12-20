@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { NODE_API_ENDPOINT } from "../../../utils/utils";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
+  removePromptHistory,
   removePromptsArr,
   setDataUsingIndex,
   setLoadUserSessions,
@@ -171,12 +172,13 @@ const WebSocketComponent = () => {
       hasFetchedRef.current = true;
       fetchSessionMessages();
     }
-  }, [isAuthLoading, loadPromptHistory]);
+  }, [isAuthLoading, loadPromptHistory, params.sessionId]);
 
   async function fetchSessionMessages() {
     console.log("triggerred");
+    console.log(params.sessionId);
     const res = await fetch(
-      `${NODE_API_ENDPOINT}/gpt/session/${params.sessionId}`,
+      `${NODE_API_ENDPOINT}/gpt/session/${loadPromptHistory}`,
       {
         headers: {
           Authorization: `Bearer ${currentUser.jwt}`,
@@ -186,7 +188,7 @@ const WebSocketComponent = () => {
     );
     const { data } = await res.json();
     dispatch(setPromptsArrAction(data.messages));
-    dispatch(setPromptHistory());
+    dispatch(removePromptHistory());
     hasFetchedRef.current = false;
     getAiSuggestedQuestions();
     resetOnEveryContext();

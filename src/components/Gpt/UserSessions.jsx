@@ -60,7 +60,7 @@ export function UserSessions({ jwt, model }) {
             <Link
               onClick={() => {
                 dispatch(removePromptsArr());
-                dispatch(setPromptHistory());
+                dispatch(setPromptHistory(id));
               }}
               key={id}
               className={`text-sm gap-2 py-2 px-1 hover:bg-[#4b4b4b] ${
