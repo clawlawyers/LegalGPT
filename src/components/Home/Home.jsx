@@ -1,7 +1,24 @@
 import React from "react";
-import caseSearchIcon from "../../assets/gifs/caseSearch.gif";
-import legalGptIcon from "../../assets/gifs/legalGpt.gif";
+import caseSearchIcon from "../../assets/icons/caseSearch.png";
+import legalGptIcon from "../../assets/icons/legalGpt.png";
 import { useNavigate } from "react-router-dom";
+
+const prodArr = [
+  {
+    icon: caseSearchIcon,
+    name: "Case Search",
+    description:
+      "Streamline your legal research with ClawLaw's AI-powered Case Search. Quickly find relevant precedents, save time, and get accurate results for court prep or research, making your legal journey faster and easier.",
+    path: "/case/search",
+  },
+  {
+    icon: legalGptIcon,
+    name: "LegalGPT",
+    description:
+      "Revolutionize legal research with LegalGPT. Instantly access case summaries, references, insights, and tailored precedents. Get accurate info in minutes, skipping endless document searches, and unlock AI-driven legal intelligence",
+    path: "/gpt/socket",
+  },
+];
 
 const Home = () => {
   const navigate = useNavigate();
@@ -36,39 +53,26 @@ const Home = () => {
           </p>
         </div>
       </div>
-      <div className="mt-10 h-64 w-full grid md:grid-cols-2 items-center justify-center gap-5">
-        <div className="grid h-full md:grid-cols-[40%_60%] items-center border-2 rounded-lg p-3">
-          <div className="w-full items-center justify-center">
-            <img className="h-36" src={caseSearchIcon} />
+      <div className="mt-10 h-72 w-full grid md:grid-cols-2 items-center justify-center gap-5">
+        {prodArr.map((x, index) => (
+          <div
+            key={index}
+            className="grid md:grid-cols-[30%_70%] w-full h-full  justify-center items-center border-2 rounded-lg p-3"
+          >
+            <div className="w-full h-full flex items-center justify-center">
+              <img className="w-24 h-24" src={x.icon} />
+            </div>
+            <div className="w-full h-full flex flex-col gap-2 py-2">
+              <h2 className="text-2xl font-semibold text-center md:text-start">
+                {x.name}
+              </h2>
+              <div className="h-full flex-1 flex flex-col gap-2 justify-between">
+                <p className="text-center md:text-start">{x.description}</p>
+                <button onClick={() => navigate(x.path)}>Explore Now</button>
+              </div>
+            </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <h2 className="text-2xl font-semibold">Case Search</h2>
-            <p>
-              Streamline your legal research with ClawLaw's AI-powered Case
-              Search. Quickly find relevant precedents, save time, and get
-              accurate results for court prep or research, making your legal
-              journey faster and easier.
-            </p>
-            <button onClick={() => navigate("/case/search")}>
-              Explore Now
-            </button>
-          </div>
-        </div>
-        <div className="h-full grid md:grid-cols-[40%_60%] items-center border-2 rounded-lg p-3">
-          <div className="w-full items-center justify-center">
-            <img className="h-56" src={legalGptIcon} />
-          </div>
-          <div className="flex flex-col justify-between">
-            <h2 className="text-2xl font-semibold">LegalGPT</h2>
-            <p>
-              Revolutionize legal research with LegalGPT. Instantly access case
-              summaries, references, insights, and tailored precedents. Get
-              accurate info in minutes, skipping endless document searches, and
-              unlock AI-driven legal intelligence
-            </p>
-            <button onClick={() => navigate("/gpt/socket")}>Explore Now</button>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

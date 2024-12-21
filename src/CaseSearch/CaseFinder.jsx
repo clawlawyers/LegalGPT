@@ -257,11 +257,11 @@ export default function CaseFinder({
     <div className=" flex flex-col gap-2 pt-20">
       <div className="flex flex-col justify-center items-center">
         {currentUser?.plan[0]?.planName === "FREE" ? <TimerComponent /> : null}
-        <p className="text-4xl text-white font-bold m-0">
+        <p className="text-2xl md:text-3xl text-center text-white font-bold m-0">
           Find Legal Cases With
         </p>
         <p
-          className="text-7xl font-bold text-center"
+          className="text-4xl md:text-6xl font-bold text-center"
           style={{
             background:
               "linear-gradient(to bottom, rgb(0, 128, 128) 0%, #00FFA3 100%)",
