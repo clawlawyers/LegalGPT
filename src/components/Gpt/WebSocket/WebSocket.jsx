@@ -791,6 +791,10 @@ const WebSocketComponent = () => {
         {
           method: "POST",
           body: JSON.stringify({ sessionId: params.sessionId }),
+          headers: {
+            Authorization: `Bearer ${currentUser.jwt}`,
+            "Content-Type": "application/json",
+          },
         }
       );
 
