@@ -251,7 +251,7 @@ const Prompts = () => {
   return (
     <div className="h-screen overflow-auto m-auto flex flex-col gap-5 justify-center items-center p-3 bg-[#0F0F0FCC]">
       <div className="md:w-[80%]">
-        <div className="w-full flex-1 flex flex-col gap-10 justify-center items-center">
+        <div className="w-full flex-1 flex flex-col justify-center items-center">
           <div
             style={{
               backgroundColor: "transparent",
