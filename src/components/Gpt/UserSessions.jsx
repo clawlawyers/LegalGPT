@@ -66,7 +66,7 @@ export function UserSessions({ jwt, model }) {
                 dispatch(removePromptsArr());
                 dispatch(setPromptHistory(id));
                 if (window.innerWidth <= 768) {
-                  dispatch(setToggleMenuManual(false)); // Dispatch the action when in mobile view
+                  dispatch(setToggleMenuManual(false));
                 }
               }}
               key={id}
