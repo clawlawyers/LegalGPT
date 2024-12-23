@@ -5,6 +5,7 @@ import {
   removePromptsArr,
   setLoadUserSessions,
   setToggleMenu,
+  setToggleMenuManual,
 } from "../../../reducers/promptSlice";
 import { CircularProgress } from "@mui/material";
 import { activePlanFeatures } from "../../../hooks/useAuthState";
@@ -34,6 +35,9 @@ const SocketSidebar = () => {
   const handleNewChat = () => {
     dispatch(removePromptsArr());
     dispatch(setRelatedCases({}));
+    if (window.innerWidth <= 768) {
+      dispatch(setToggleMenuManual(false)); // Dispatch the action when in mobile view
+    }
   };
 
   return (
