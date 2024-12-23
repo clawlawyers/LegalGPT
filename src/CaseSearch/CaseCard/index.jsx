@@ -239,10 +239,8 @@ function CaseCard({
 
   return (
     <div
-      className={Styles.backdrop}
+      className={`${Styles.backdrop} flex flex-col md:flex-row`}
       style={{
-        display: "flex",
-        flexWrap: "wrap",
         justifyContent: "space-between",
         gap: 10,
         alignItems: "center",
@@ -260,44 +258,45 @@ function CaseCard({
           Number of citations- {citations}
         </p>
       </div>
-
-      <button
-        onClick={handleOpen}
-        style={{
-          border: "none",
-          padding: "10px 12px",
-          minWidth: "fit-content",
-          backgroundColor: "white",
-          borderRadius: 10,
-          fontWeight: 700,
-          fontSize: 14,
-          textDecoration: "none",
-          color: "black",
-          backgroundImage: "none",
-        }}
-      >
-        View document
-      </button>
-      <button
-        onClick={handleSummaryToggle}
-        style={{
-          border: "none",
-          padding: "10px 12px",
-          minWidth: "fit-content",
-          backgroundColor: "white",
-          borderRadius: 10,
-          fontWeight: 700,
-          fontSize: 14,
-          textDecoration: "none",
-          color: "black",
-          backgroundImage: "none",
-          cursor: "pointer",
-        }}
-      >
-        {/* {isSummaryOpen ? "Hide summary" : "View summary"} */}
-        View Summery
-      </button>
-      <div>
+      <div className="flex gap-2">
+        <button
+          onClick={handleOpen}
+          style={{
+            border: "none",
+            padding: "10px 12px",
+            minWidth: "fit-content",
+            backgroundColor: "white",
+            borderRadius: 10,
+            fontWeight: 700,
+            fontSize: 14,
+            textDecoration: "none",
+            color: "black",
+            backgroundImage: "none",
+          }}
+        >
+          View document
+        </button>
+        <button
+          onClick={handleSummaryToggle}
+          style={{
+            border: "none",
+            padding: "10px 12px",
+            minWidth: "fit-content",
+            backgroundColor: "white",
+            borderRadius: 10,
+            fontWeight: 700,
+            fontSize: 14,
+            textDecoration: "none",
+            color: "black",
+            backgroundImage: "none",
+            cursor: "pointer",
+          }}
+        >
+          {/* {isSummaryOpen ? "Hide summary" : "View summary"} */}
+          View Summery
+        </button>
+      </div>
+      {/* <div>
         {isSummaryOpen && (
           <>
             {isLoading && (
@@ -312,7 +311,7 @@ function CaseCard({
             </>
           </>
         )}
-      </div>
+      </div> */}
 
       <Modal
         open={openCase}

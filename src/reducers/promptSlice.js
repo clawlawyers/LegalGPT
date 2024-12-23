@@ -55,6 +55,9 @@ export const promptSlice = createSlice({
     setToggleMenu(state, action) {
       state.toggle = !state.toggle;
     },
+    setToggleMenuManual(state, action) {
+      state.toggle = action.payload;
+    },
     setPromptHistory(state, action) {
       state.loadHistory = action.payload;
     },
@@ -74,6 +77,7 @@ export const {
   removePromptsArr,
   setDataUsingIndex,
   setToggleMenu,
+  setToggleMenuManual,
   setPromptHistory,
   removePromptHistory,
   setLoadUserSessions,

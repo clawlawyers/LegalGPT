@@ -48,7 +48,7 @@ export default function CaseFinder({
   const [endDate, setEndDate] = useState(moment("19-sep-20"));
   const [result, setResult] = useState([]);
 
-  const BATCH_INTERVAL = 60 * 1000;
+  // const BATCH_INTERVAL = 60 * 1000;
 
   const currentUser = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
@@ -62,11 +62,11 @@ export default function CaseFinder({
   const [referenceSocket, setReferenceSocket] = useState(null);
   const [referenceIndex, setReferenceIndex] = useState(0);
 
-  const currentUserRef = useRef(currentUser);
+  // const currentUserRef = useRef(currentUser);
 
-  useEffect(() => {
-    currentUserRef.current = currentUser;
-  }, [currentUser]);
+  // useEffect(() => {
+  //   currentUserRef.current = currentUser;
+  // }, [currentUser]);
 
   const handleCourtChange = useCallback((event) => {
     const {
@@ -127,42 +127,42 @@ export default function CaseFinder({
     }
   }
 
-  const updateEngagementTime = useCallback(async () => {
-    try {
-      await axios.post(
-        `${NODE_API_ENDPOINT}/gpt/storeUsedTime`,
-        {
-          // engagementData
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${currentUser.jwt}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (error) {
-      console.error("Error updating engagement time:", error);
-    }
-  }, []);
+  // const updateEngagementTime = useCallback(async () => {
+  //   try {
+  //     await axios.post(
+  //       `${NODE_API_ENDPOINT}/gpt/storeUsedTime`,
+  //       {
+  //         // engagementData
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${currentUser.jwt}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //   } catch (error) {
+  //     console.error("Error updating engagement time:", error);
+  //   }
+  // }, []);
 
-  const flushQueue = useCallback(() => {
-    const user = currentUserRef.current;
-    if (user) {
-      updateEngagementTime();
-    }
-  }, [updateEngagementTime]);
+  // const flushQueue = useCallback(() => {
+  //   const user = currentUserRef.current;
+  //   if (user) {
+  //     updateEngagementTime();
+  //   }
+  // }, [updateEngagementTime]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      flushQueue();
-    }, BATCH_INTERVAL);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     flushQueue();
+  //   }, BATCH_INTERVAL);
 
-    return () => {
-      clearInterval(interval);
-      flushQueue();
-    };
-  }, [flushQueue]);
+  //   return () => {
+  //     clearInterval(interval);
+  //     flushQueue();
+  //   };
+  // }, [flushQueue]);
 
   useEffect(() => {
     console.log("triggered");
@@ -254,9 +254,9 @@ export default function CaseFinder({
   }, [referenceIndex, referenceMessage]);
 
   return (
-    <div className=" flex flex-col gap-2 pt-20">
+    <div className=" flex flex-col gap-2 pt-20 overflow-auto">
       <div className="flex flex-col justify-center items-center">
-        {currentUser?.plan[0]?.planName === "FREE" ? <TimerComponent /> : null}
+        {/* {currentUser?.plan[0]?.planName === "FREE" ? <TimerComponent /> : null} */}
         <p className="text-2xl md:text-3xl text-center text-white font-bold m-0">
           Find Legal Cases With
         </p>
@@ -478,11 +478,12 @@ export default function CaseFinder({
             style={{ display: "flex", flexDirection: "column", gap: 10 }}
           >
             {loading ? (
-              <div style={{ display: "flex", justifyContent: "center" }}>
+              <div className="flex flex-col items-center justify-center gap-2">
                 <CircularProgress style={{ color: "white" }} />
+                <p>Loading Related Cases...</p>
               </div>
             ) : (
-              <div className="flex flex-col gap-3 overflow-auto">
+              <div className="flex flex-col gap-3">
                 {/* {result
                 ? result.map((relatedCase) => (
                     <CaseCard

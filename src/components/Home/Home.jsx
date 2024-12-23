@@ -24,7 +24,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="h-screen overflow-auto m-auto w-[80%] flex flex-col justify-center items-center">
+    <div className="md:h-screen m-auto w-[80%] flex flex-col justify-center items-center">
       <div>
         <h1
           className="text-5xl font-bold p-5 text-center"
@@ -53,7 +53,7 @@ const Home = () => {
           </p>
         </div>
       </div>
-      <div className="mt-10 h-72 w-full grid md:grid-cols-2 items-center justify-center gap-5">
+      <div className="mt-10 h-full md:h-72 w-full grid md:grid-cols-2 items-center justify-center gap-5">
         {prodArr.map((x, index) => (
           <div
             key={index}
