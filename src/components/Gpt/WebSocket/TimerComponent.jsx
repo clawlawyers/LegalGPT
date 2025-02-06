@@ -10,11 +10,15 @@ import {
 
 const TimerComponent = React.memo(() => {
   const currentUser = useSelector((state) => state.auth.user);
-  const timeUsed = currentUser.totalUsed;
+  const timeUsed = currentUser?.plan[0]?.UsedLegalGPTime;
   const [timeLeft, setTimeLeft] = useState({
-    minutes: timeUsed >= 15 ? 0 : 15 - timeUsed,
+    minutes:
+      timeUsed >= currentUser?.plan[0]?.plan?.LegalGPTime
+        ? 0
+        : currentUser?.plan[0]?.plan?.LegalGPTime - timeUsed,
     seconds: 0,
   });
+  console.log(timeLeft);
   const [countdownOver, setCountDownOver] = useState(false);
 
   const dispatch = useDispatch();

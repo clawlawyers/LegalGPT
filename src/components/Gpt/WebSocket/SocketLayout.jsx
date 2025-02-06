@@ -5,6 +5,7 @@ import { NODE_API_ENDPOINT } from "../../../utils/utils";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setToggleMenuManual } from "../../../reducers/promptSlice";
+import { setUsedTime } from "../../../reducers/authSlice";
 
 const SocketLayout = () => {
   const BATCH_INTERVAL = 60 * 1000;
@@ -29,7 +30,7 @@ const SocketLayout = () => {
 
   const updateEngagementTime = useCallback(async () => {
     try {
-      await axios.post(
+      const response = await axios.post(
         `${NODE_API_ENDPOINT}/gpt/storeUsedTime`,
         {
           // engagementData
@@ -41,6 +42,8 @@ const SocketLayout = () => {
           },
         }
       );
+      const timeData = response.data.usedTime;
+      dispatch(setUsedTime(timeData));
     } catch (error) {
       console.error("Error updating engagement time:", error);
     }

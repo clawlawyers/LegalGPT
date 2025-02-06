@@ -52,6 +52,13 @@ export const authSlice = createSlice({
     setAutoLogout(state) {
       state.autologout = true;
     },
+    setUsedTime(state, action) {
+      const reqObj = state.user.plan[0];
+      const newPlanObj = [
+        { ...state.user.plan[0], UsedLegalGPTime: action.payload },
+      ];
+      state.user = { ...state.user, plan: newPlanObj };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(retrieveAuth.pending, (state) => {
@@ -79,7 +86,7 @@ export const authSlice = createSlice({
   },
 });
 
-export const { login, logout, gptUserCreated, setAutoLogout } =
+export const { login, logout, gptUserCreated, setAutoLogout, setUsedTime } =
   authSlice.actions;
 
 export default authSlice.reducer;

@@ -53,7 +53,7 @@ const SocketSidebar = () => {
       <div
         className={`z-20 absolute md:relative ${
           toggleMenu ? "w-2/4 md:w-1/5" : "w-auto"
-        } transition-width duration-500 ease-in-out delay-500 bg-[#222222ef] h-screen flex flex-col`}
+        } transition-width duration-500 ease-in-out delay-500 bg-[#222222ef] h-full md:h-screen flex flex-col`}
       >
         <div className="absolute right-0 top-1 h-[5%] flex justify-end p-2">
           <MenuOutlinedIcon
@@ -63,7 +63,7 @@ const SocketSidebar = () => {
         </div>
         <div className="flex-1 h-[95%]">
           {toggleMenu ? (
-            <div className="flex flex-col h-full gap-2">
+            <div className="flex flex-col h-full md:h-screen gap-2">
               <div
                 className="bg-[#2D2D2D] p-2 m-1 rounded-lg"
                 style={{ fontSize: 14, color: "#777" }}
@@ -88,9 +88,9 @@ const SocketSidebar = () => {
                       {currentUser?.plan[0]?.planName?.split("_")[0]}
                     </span>
                   </div>
-                  {currentUser?.plan[0]?.planName === "FREE" ? (
-                    <TimerComponent />
-                  ) : null}
+                  {/* {currentUser?.plan[0]?.planName === "FREE" ? ( */}
+                  <TimerComponent />
+                  {/* ) : null} */}
                 </div>
                 {/* ) : (
                   <CircularProgress style={{ padding: 10, color: "white" }} />
