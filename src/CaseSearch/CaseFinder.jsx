@@ -24,16 +24,31 @@ import { Helmet } from "react-helmet";
 import TimerComponent from "../components/Gpt/WebSocket/TimerComponent";
 import axios from "axios";
 
+// const courts = [
+//   "Supreme Court of India",
+//   "Chattisgarh High Court",
+//   "Sikkim High Court",
+//   "Uttarakhand High Court",
+//   "Calcutta High Court",
+//   "Jammu and Kashmir High Court",
+//   "Delhi High Court",
+//   "Delhi District Court",
+//   "Gujarat High Court",
+//   "Rajasthan High Court",
+// ];
+
 const courts = [
   "Supreme Court of India",
-  "Chattisgarh High Court",
-  "Sikkim High Court",
-  "Uttarakhand High Court",
+  "Allahabad High Court",
   "Calcutta High Court",
-  "Jammu and Kashmir High Court",
-  "Delhi High Court",
   "Delhi District Court",
+  "Delhi High Court",
   "Gujarat High Court",
+  "Jammu and Kashmir High Court",
+  "Jharkhand High Court",
+  "Karnataka High Court",
+  "Kerela High Court",
+  "Madhya Pradesh High Court",
   "Rajasthan High Court",
 ];
 

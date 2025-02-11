@@ -77,14 +77,16 @@ const multilingualSupportLanguages = [
 
 const highCourtArr = [
   "Supreme Court of India",
-  "Chattisgarh High Court",
-  "Sikkim High Court",
-  "Uttarakhand High Court",
+  "Allahabad High Court",
   "Calcutta High Court",
-  "Delhi High Court",
-  "Jammu and Kashmir High Court",
-  "Gujarat High Court",
   "Delhi District Court",
+  "Delhi High Court",
+  "Gujarat High Court",
+  "Jammu and Kashmir High Court",
+  "Jharkhand High Court",
+  "Karnataka High Court",
+  "Kerela High Court",
+  "Madhya Pradesh High Court",
   "Rajasthan High Court",
 ];
 
