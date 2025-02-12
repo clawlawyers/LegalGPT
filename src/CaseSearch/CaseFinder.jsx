@@ -24,6 +24,8 @@ import { Helmet } from "react-helmet";
 import TimerComponent from "../components/Gpt/WebSocket/TimerComponent";
 import axios from "axios";
 
+import dayjs from "dayjs";
+
 // const courts = [
 //   "Supreme Court of India",
 //   "Chattisgarh High Court",
@@ -60,7 +62,7 @@ export default function CaseFinder({
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [startDate, setStartDate] = useState(moment("18-sep-01"));
-  const [endDate, setEndDate] = useState(moment("19-sep-20"));
+  const [endDate, setEndDate] = useState(moment(dayjs()));
   const [result, setResult] = useState([]);
 
   // const BATCH_INTERVAL = 60 * 1000;
@@ -284,8 +286,7 @@ export default function CaseFinder({
             backgroundClip: "text",
 
             color: "transparent",
-          }}
-        >
+          }}>
           Claw Case Search
         </p>
       </div>
@@ -316,8 +317,7 @@ export default function CaseFinder({
                     border: "none",
                     backgroundColor: "inherit",
                     backgroundImage: "none",
-                  }}
-                >
+                  }}>
                   <ClearIcon style={{ fontSize: 30, color: "black" }} />
                 </button>
               </div>
@@ -333,8 +333,7 @@ export default function CaseFinder({
                       backgroundColor: "rgb(0, 128, 128)",
                       borderRadius: 15,
                       padding: 10,
-                    }}
-                  >
+                    }}>
                     <Link
                       className="linkImg"
                       to="/pricing"
@@ -343,8 +342,7 @@ export default function CaseFinder({
                         textDecoration: "none",
                         width: "fit-content",
                         border: "none",
-                      }}
-                    >
+                      }}>
                       Buy Credits
                     </Link>
                   </button>
@@ -363,8 +361,7 @@ export default function CaseFinder({
                 backgroundColor: "white",
                 padding: 16,
                 borderRadius: 10,
-              }}
-            >
+              }}>
               <SearchOutlined
                 style={{ color: "#777", marginRight: "10px", marginTop: "7px" }}
               />
@@ -391,8 +388,7 @@ export default function CaseFinder({
                   padding: "10px 30px",
                   cursor: "pointer",
                   marginLeft: 10,
-                }}
-              >
+                }}>
                 Search
               </button>
             </form>
@@ -402,8 +398,7 @@ export default function CaseFinder({
               <div>Court Name</div>
               <FormControl
                 sx={{ width: "100%" }}
-                error={selectedCourts.length === 0}
-              >
+                error={selectedCourts.length === 0}>
                 <Select
                   multiple
                   value={selectedCourts}
@@ -425,8 +420,7 @@ export default function CaseFinder({
                           gap: 0.5,
                           maxHeight: 80,
                           overflow: "auto",
-                        }}
-                      >
+                        }}>
                         {selected.map((value) => (
                           <Chip
                             key={value}
@@ -453,8 +447,7 @@ export default function CaseFinder({
                     maxWidth: "450px",
                     fontWeight: "bold",
                     fontSize: "10px",
-                  }}
-                >
+                  }}>
                   {courts.map((court) => (
                     <MenuItem key={court} value={court}>
                       {court}
@@ -474,6 +467,7 @@ export default function CaseFinder({
                 <DatePicker
                   value={startDate}
                   onChange={(newVal) => setStartDate(newVal)}
+                  shouldDisableDate={(date) => date.isAfter(dayjs())}
                   sx={{ backgroundColor: "white", borderRadius: "10px" }}
                 />
               </div>
@@ -482,6 +476,8 @@ export default function CaseFinder({
                 <DatePicker
                   value={endDate}
                   onChange={(newVal) => setEndDate(newVal)}
+                  defaultValue={dayjs()}
+                  shouldDisableDate={(date) => date.isAfter(dayjs())}
                   sx={{ backgroundColor: "white", borderRadius: "10px" }}
                 />
               </div>
@@ -490,8 +486,7 @@ export default function CaseFinder({
 
           <div
             className="h-screen mt-5"
-            style={{ display: "flex", flexDirection: "column", gap: 10 }}
-          >
+            style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {loading ? (
               <div className="flex flex-col items-center justify-center gap-2">
                 <CircularProgress style={{ color: "white" }} />
@@ -586,8 +581,7 @@ function StudentReferralModal() {
         open={open}
         onClose={() => {
           if (!loading) setOpen(false);
-        }}
-      >
+        }}>
         <div
           style={{
             backgroundColor: "#1e1e1e",
@@ -600,16 +594,14 @@ function StudentReferralModal() {
             padding: 10,
             transform: "translate(-50%, -50%)",
             boxShadow: 24,
-          }}
-        >
+          }}>
           <div
             style={{
               position: "sticky",
               top: 0,
               display: "flex",
               justifyContent: "flex-end",
-            }}
-          >
+            }}>
             <button
               disabled={loading}
               onClick={() => setOpen(false)}
@@ -617,8 +609,7 @@ function StudentReferralModal() {
                 border: "none",
                 backgroundColor: "inherit",
                 backgroundImage: "none",
-              }}
-            >
+              }}>
               <ClearIcon style={{ fontSize: 30, color: "white" }} />
             </button>
           </div>
@@ -630,8 +621,7 @@ function StudentReferralModal() {
               flexDirection: "column",
               gap: 15,
               alignItems: "center",
-            }}
-          >
+            }}>
             <h3>Redeem Referral Code</h3>
             <input
               value={referralCode}
@@ -656,8 +646,7 @@ function StudentReferralModal() {
                 padding: 10,
                 width: "fit-content",
                 border: "none",
-              }}
-            >
+              }}>
               {loading ? (
                 <CircularProgress style={{ color: "white", padding: 10 }} />
               ) : (
@@ -678,8 +667,7 @@ function StudentReferralModal() {
           padding: 10,
           width: "fit-content",
           border: "none",
-        }}
-      >
+        }}>
         Student Referral
       </button>
     </>
