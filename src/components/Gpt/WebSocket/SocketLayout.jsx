@@ -28,6 +28,8 @@ const SocketLayout = () => {
     currentUserRef.current = currentUser;
   }, [currentUser]);
 
+  console.log(currentUser);
+
   const updateEngagementTime = useCallback(async () => {
     try {
       const response = await axios.post(
