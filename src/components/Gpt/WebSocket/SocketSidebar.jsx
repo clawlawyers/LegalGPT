@@ -88,9 +88,9 @@ const SocketSidebar = () => {
                       {currentUser?.plan[0]?.planName?.split("_")[0]}
                     </span>
                   </div>
-                  {currentUser?.plan[0]?.planName === "FREE" ? (
+                  {/* {currentUser?.plan[0]?.planName === "FREE" ? (
                     <TimerComponent />
-                  ) : null}
+                  ) : null} */}
                 </div>
                 {/* ) : (
                   <CircularProgress style={{ padding: 10, color: "white" }} />
