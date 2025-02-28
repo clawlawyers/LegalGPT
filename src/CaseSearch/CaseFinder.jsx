@@ -466,7 +466,7 @@ export default function CaseFinder({
                   value={startDate}
                   onChange={(newVal) => setStartDate(newVal)}
                   sx={{ backgroundColor: "white", borderRadius: "10px" }}
-                  shouldDisableDate={(date) => date.isAfter(dayjs())} // Future date disable
+                  shouldDisableDate={(date) => date.isAfter(dayjs())}
                 />
               </div>
               <div>
