@@ -4,12 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { NODE_API_ENDPOINT } from "../../../utils/utils";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
+  removePromptDatabyIndex,
   removePromptHistory,
   removePromptsArr,
   setDataUsingIndex,
   setLoadUserSessions,
   setMessageIdPromptData,
   setNewPromptData,
+  setNewPromptDataByIndex,
   setPromptHistory,
   setPromptLoading,
   setPromptsArrAction,
@@ -42,7 +44,6 @@ import fetchWrapper from "../../../utils/fetchWrapper";
 import { useAuthState } from "../../../hooks/useAuthState";
 
 const languageArr = [
-  "English",
   "Hindi",
   "Bengali",
   "Punjabi",
@@ -129,6 +130,10 @@ const WebSocketComponent = () => {
   const [summeryMessage, setSummeryMessage] = useState("");
   const [summerySocket, setSummerySocket] = useState(null);
   const [summeryIndex, setSummeryIndex] = useState(0);
+
+  const [regenerate, setRegenerate] = useState(false);
+  const [regenerateMessage, setRegenerateMessage] = useState("");
+  const [regenerateMessageIndex, setRegenerateMessageIndex] = useState(0);
 
   const currentUser = useSelector((state) => state.auth.user);
   const promptsArrSelector = useSelector((state) => state?.prompt?.prompts);
@@ -217,17 +222,17 @@ const WebSocketComponent = () => {
     setPromptsArr(promptsArrSelector);
   }, [promptsArrSelector]);
 
-  useEffect(() => {
-    if (divRef.current) {
-      divRef.current.scrollTop = divRef.current.scrollHeight;
-    }
-  }, [
-    promptsArr,
-    aiSuggestedQuestions,
-    relatedCases.cases,
-    refRelevantCase,
-    refSupremeCase,
-  ]);
+  // useEffect(() => {
+  //   if (divRef.current) {
+  //     divRef.current.scrollTop = divRef.current.scrollHeight / 2;
+  //   }
+  // }, [
+  //   promptsArr,
+  //   aiSuggestedQuestions,
+  //   relatedCases.cases,
+  //   refRelevantCase,
+  //   refSupremeCase,
+  // ]);
 
   useEffect(() => {
     const newSocket = new WebSocket(
@@ -259,7 +264,15 @@ const WebSocketComponent = () => {
         .replaceAll('"', "")
         .replaceAll(":", " :")
         .replaceAll("#", "");
-      setMessage((prevMessages) => [...prevMessages, formattedData]);
+      if (regenerate) {
+        setTextLoading(false);
+        setRegenerateMessage((prevMessages) => [
+          ...prevMessages,
+          formattedData,
+        ]);
+      } else {
+        setMessage((prevMessages) => [...prevMessages, formattedData]);
+      }
     };
 
     newSocket.onclose = (event) => {
@@ -278,14 +291,14 @@ const WebSocketComponent = () => {
     return () => {
       newSocket.close();
     };
-  }, []);
+  }, [regenerate]);
 
   const sendMessage = (e, message) => {
     e.preventDefault();
+
+    setRegenerate(false);
     if (socket && socket.readyState === WebSocket.OPEN) {
-      // console.log(message);
       socket.send(JSON.stringify(message));
-      // dispatch(setPromptLoading());
     }
   };
 
@@ -357,6 +370,7 @@ const WebSocketComponent = () => {
             isUser: false,
             sessionId: params.sessionId,
           });
+          // setMessage("");
           getAiSuggestedQuestions();
           // setMessage("");
         }
@@ -473,7 +487,7 @@ const WebSocketComponent = () => {
     return context;
   };
 
-  const handleRegenerateResponse = async (index) => {
+  const handleRegenerateResponseOld = async (index) => {
     setEditIndex(index);
     const reqQuery = promptsArr[index];
     const reqQueryIndex = promptsArr[index - 1];
@@ -520,6 +534,60 @@ const WebSocketComponent = () => {
       setTextLoading(false);
     }
   };
+
+  const handleRegenerateResponse = (index) => {
+    setRegenerate(true);
+    setEditIndex(index);
+    setTextLoading(true);
+    const reqQueryIndex = promptsArr[index - 1];
+    console.log(reqQueryIndex);
+    dispatch(
+      removePromptDatabyIndex({
+        index: index,
+        newObj: {
+          text: null,
+          isDocument: null,
+          contextId: null,
+          isUser: false,
+          sessionId: params.sessionId,
+        },
+      })
+    );
+
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(
+        JSON.stringify({ prompt: reqQueryIndex.text, context: getContext() })
+      );
+    }
+  };
+
+  useEffect(() => {
+    console.log("rendered");
+    if (regenerateMessage.length === 0) return;
+
+    const typeText = () => {
+      if (regenerateMessageIndex < regenerateMessage.length) {
+        setRegenerateMessageIndex((prev) => prev + 1);
+        dispatch(
+          setNewPromptDataByIndex({
+            index: editIndex,
+            text: regenerateMessage[regenerateMessageIndex],
+          })
+        );
+
+        if (regenerateMessage[regenerateMessageIndex] === "<EOS>") {
+          console.log("Message is Finished");
+          // setRegenerate(false);
+          // setMessage("");
+        }
+      }
+    };
+
+    if (regenerateMessageIndex < regenerateMessage.length) {
+      const animationFrameId = requestAnimationFrame(typeText);
+      return () => cancelAnimationFrame(animationFrameId);
+    }
+  }, [regenerateMessageIndex, regenerateMessage]);
 
   const handleTranslateClick = (event, index) => {
     console.log(index);
@@ -923,7 +991,7 @@ const WebSocketComponent = () => {
           >
             {promptsArr.map((x, index) => (
               <div key={index}>
-                <div className="flex items-center justify-end">
+                {/* <div className="flex items-center justify-end">
                   {!x.isUser ? (
                     <>
                       <IconButton
@@ -943,7 +1011,7 @@ const WebSocketComponent = () => {
                       </Menu>
                     </>
                   ) : null}
-                </div>
+                </div> */}
                 {x.text && !x.isDocument ? (
                   <div className="w-full flex gap-1 items-center">
                     {x.isUser ? <AccountCircleIcon /> : null}
@@ -1082,9 +1150,9 @@ const WebSocketComponent = () => {
                                 <>
                                   <div
                                     className="flex items-center gap-1 cursor-pointer"
-                                    onClick={() =>
-                                      handleRegenerateResponse(index)
-                                    }
+                                    // onClick={() =>
+                                    //   handleRegenerateResponse(index)
+                                    // }
                                   >
                                     <img
                                       className="w-4 h-4 rounded-none"
