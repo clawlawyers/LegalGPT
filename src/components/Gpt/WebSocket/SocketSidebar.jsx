@@ -89,10 +89,10 @@ const SocketSidebar = () => {
                     </span>
                     {console.log(currentUser?.plan[0].plan.LegalGPTime)}
                   </div>
-                  {/* {currentUser?.plan[0]?.planName === "FREE" ||
+                  {currentUser?.plan[0]?.planName === "FREE" ||
                   currentUser?.plan[0].plan.LegalGPTime !== 2025 ? (
                     <TimerComponent />
-                  ) : null} */}
+                  ) : null}
                 </div>
                 {/* ) : (
                   <CircularProgress style={{ padding: 10, color: "white" }} />
