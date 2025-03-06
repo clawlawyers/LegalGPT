@@ -87,8 +87,10 @@ const SocketSidebar = () => {
                     <span className="font-bold uppercase">
                       {currentUser?.plan[0]?.planName?.split("_")[0]}
                     </span>
+                    {console.log(currentUser?.plan[0].plan.LegalGPTime)}
                   </div>
-                  {/* {currentUser?.plan[0]?.planName === "FREE" ? (
+                  {/* {currentUser?.plan[0]?.planName === "FREE" ||
+                  currentUser?.plan[0].plan.LegalGPTime !== 2025 ? (
                     <TimerComponent />
                   ) : null} */}
                 </div>

@@ -28,6 +28,22 @@ export const promptSlice = createSlice({
       promptsArr[index] = text;
       state.prompts = promptsArr;
     },
+    removePromptDatabyIndex(state, action) {
+      const { index, newObj } = action.payload;
+      const promptArr = state.prompts;
+      promptArr[index] = newObj;
+    },
+    setNewPromptDataByIndex(state, action) {
+      const { index, text } = action.payload;
+      const promptArr = state.prompts;
+
+      const currentText = promptArr[index].text || "";
+
+      promptArr[index] = {
+        ...promptArr[index],
+        text: currentText + text,
+      };
+    },
     setNewPromptData(state, action) {
       const promptArr = state.prompts;
 
@@ -82,6 +98,8 @@ export const {
   removePromptHistory,
   setLoadUserSessions,
   setMessageIdPromptData,
+  setNewPromptDataByIndex,
+  removePromptDatabyIndex,
 } = promptSlice.actions;
 
 export default promptSlice.reducer;
