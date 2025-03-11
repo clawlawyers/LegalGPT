@@ -11,7 +11,7 @@ const SocketLayout = () => {
   const BATCH_INTERVAL = 60 * 1000;
 
   const currentUser = useSelector((state) => state.auth.user);
-  // console.log(currentUser);
+  //console.log(currentUser);
 
   const currentUserRef = useRef(currentUser);
 
@@ -53,7 +53,9 @@ const SocketLayout = () => {
 
   const flushQueue = useCallback(() => {
     const user = currentUserRef.current;
-    if (user) {
+    console.log(user);
+
+    if (user && user.plan[0].planName === "FREE") {
       updateEngagementTime();
     }
   }, [updateEngagementTime]);
