@@ -58,6 +58,18 @@ const HomeLayout = () => {
       const currentUser = JSON.parse(decodedString);
       localStorage.setItem("token", currentUser.token);
       // if (currentUser) {
+      console.log(currentUser);
+      if (currentUser.redirectURL === "legalgpt") {
+        console.log(currentUser);
+        navigate("/gpt/socket");
+        return;
+      }
+      if (currentUser.redirectURL === "casesearch") {
+        console.log(currentUser);
+        navigate("/case/search");
+        return;
+      }
+
       if (currentUser.prompt && currentUser.callbackUrl) {
         if (currentUser.callbackUrl == "/gpt/socket") {
           const res = await fetch(`${NODE_API_ENDPOINT}/gpt/session`, {
@@ -139,8 +151,7 @@ const HomeLayout = () => {
       radial-gradient(circle at 100% 90%, #018585, transparent 15%)
       `,
         width: "100%",
-      }}
-    >
+      }}>
       <Outlet />
       <div
         style={{

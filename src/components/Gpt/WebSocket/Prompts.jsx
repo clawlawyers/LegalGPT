@@ -21,6 +21,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SendIcon from "@mui/icons-material/Send";
 // import regenerateIcon from "../../assets/images/regenerate.png";
 import HomepageSuggestionCards from "./HomepageSuggestionCards";
+import { setPlan } from "../../../reducers/gptSlice";
 
 const languageArr = [
   "Hindi",
@@ -50,6 +51,23 @@ const Prompts = () => {
   const [fileDialog, setFileDialog] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [fileSubmitLoading, setFileSubmitLoading] = useState(false);
+
+  // useEffect(() => {
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   if (urlParams.size !== 0) {
+  //     const encodedStringBtoA = urlParams.get("user");
+  //     const decodedString = atob(encodedStringBtoA);
+  //     console.log("Decoded String:", decodedString);
+
+  //     const sentUser = JSON.parse(decodedString);
+
+  //     // Dispatch the user data to Redux state
+  //     dispatch(setPlan(sentUser));
+  //     window.history.replaceState({}, document.title, window.location.pathname);
+  //   } else {
+  //     alert("user details not found!");
+  //   }
+  // }, [dispatch]); // Only re-run if dispatch changes
 
   async function getSessionId(e, message) {
     e.preventDefault();
@@ -260,24 +278,21 @@ const Prompts = () => {
               alignItems: "center",
               textAlign: "center",
               paddingBottom: "40px",
-            }}
-          >
+            }}>
             <div
               style={{
                 backgroundColor: "transparent",
                 fontSize: "48px",
                 fontWeight: 700,
                 color: "#E5E5E5",
-              }}
-            >
+              }}>
               Welcome to{" "}
               <span
                 style={{
                   padding: 3,
                   borderLeft: `4px solid #008080`,
                   background: `linear-gradient(to right, rgba(0,128,128,0.75), rgba(0,128,128,0))`,
-                }}
-              >
+                }}>
                 LegalGPT
               </span>
             </div>
@@ -287,8 +302,7 @@ const Prompts = () => {
                 paddingTop: 10,
                 fontSize: 16,
                 background: "inherit",
-              }}
-            >
+              }}>
               The power of AI for your Legal service
             </div>
           </div>
@@ -300,8 +314,7 @@ const Prompts = () => {
               prompt: inputText,
             });
           }}
-          className=" flex gap-2 w-full"
-        >
+          className=" flex gap-2 w-full">
           <input
             required
             placeholder="Add your query..."
@@ -319,8 +332,7 @@ const Prompts = () => {
               borderRadius: 10,
               cursor: "pointer",
               marginRight: "5px",
-            }}
-          >
+            }}>
             <FileUploadIcon
               style={{ color: "white", backgroundColor: "transparent" }}
             />
@@ -335,8 +347,7 @@ const Prompts = () => {
             anchorOrigin={{
               vertical: "bottom",
               horizontal: "left",
-            }}
-          >
+            }}>
             {!fileDialog ? (
               <div className="p-3 bg-[#C2FFFF] w-full border-4 border-[#018081]">
                 <div className="flex w-full justify-between items-center gap-28">
@@ -357,8 +368,7 @@ const Prompts = () => {
                     margin="normal"
                     size="small"
                     value={selectedLanguage}
-                    onChange={handleChange}
-                  >
+                    onChange={handleChange}>
                     {languageArr.sort().map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}
@@ -373,8 +383,7 @@ const Prompts = () => {
                     className="rounded-lg"
                     style={{
                       background: "linear-gradient(90deg,#018081,#001B1B)",
-                    }}
-                  >
+                    }}>
                     Continue
                   </button>
                 </div>
@@ -422,8 +431,7 @@ const Prompts = () => {
           <button
             disabled={inputText === ""}
             type="submit"
-            className="rounded-lg"
-          >
+            className="rounded-lg">
             <SendIcon />
           </button>
         </form>
