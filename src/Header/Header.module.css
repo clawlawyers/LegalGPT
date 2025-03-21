@@ -89,7 +89,7 @@
 /* For smaller screens like 425px, 375px, and 320px */
 @media (max-width: 425px) {
   .headerLogo img {
-    height: 25px !important;
+    height: 20px !important;
     width: auto !important; /* Further reduced logo size */
   }
 
@@ -116,7 +116,7 @@
 
   .iconSize {
     font-size: 7px !important; /* Slightly larger than 5px */
-    transform: scale(1); /* Ensure icon is not scaled up */
+   /* Ensure icon is not scaled up */
   }
 
   .headerLink {

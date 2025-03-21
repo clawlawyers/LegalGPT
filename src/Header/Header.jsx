@@ -6,6 +6,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import { logout } from "../reducers/authSlice";
 import { useNavigate } from "react-router-dom";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useMediaQuery } from "@mui/material";
 
 function HeaderGpt() {
   const currentUser = useSelector((state) => state.auth.user);
@@ -28,6 +29,24 @@ const encodedUrl = btoa(JSON.stringify(baseUrl))
 
 window.open(`https://www.clawlaw.in/login?redirectURL${encodedUrl}`)
 }
+
+
+
+
+
+const is320 = useMediaQuery('(max-width:320px)');
+const is375_425 = useMediaQuery('(min-width:321px) and (max-width:425px)');
+const is768 = useMediaQuery('(min-width:426px) and (max-width:768px)');
+const isAbove768 = useMediaQuery('(min-width:769px)');
+
+// Dynamically decide icon size
+const iconSize = is320
+  ? "15px"
+  : is375_425
+  ? "15px"
+  : is768
+  ? "20px"
+  : "20px"; // default for larger screens
 
 
 
@@ -68,8 +87,8 @@ window.open(`https://www.clawlaw.in/login?redirectURL${encodedUrl}`)
                 transition: "color 0.3s ease",
               }}
             >
-              <button className={Styles.login}>
-                <HomeIcon className="iconSize" />
+              <button className={Styles.login} >
+                <HomeIcon   sx={{ fontSize: iconSize }}  />
               </button>
             </a>
           </div>
@@ -90,7 +109,7 @@ window.open(`https://www.clawlaw.in/login?redirectURL${encodedUrl}`)
               }}
             >
               <button className={Styles.login}>
-               <AccountCircleIcon className="iconSize"/>
+               <AccountCircleIcon sx={{ fontSize: iconSize }} />
               </button>
             </a>
           </div>
