@@ -1,0 +1,129 @@
+/* Main Header Container */
+.headerContainer {
+  position: inherit;
+  z-index: 2px;
+  width: 100%;
+  padding-top: 20px;
+}
+
+/* Header Content */
+.headerContent {
+  width: 90%;
+  margin: auto;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 40px;
+  border-radius: 20px;
+}
+
+/* Header Logo */
+.headerLogo {
+  font-weight: 600;
+  font-size: 30px;
+  display: flex;
+  background-color: transparent;
+}
+
+/* Header Link */
+.headerLink {
+  display: flex;
+  gap: 40px; /* Default gap between icons */
+  font-weight: 500;
+  font-size: 20px;
+  background-color: transparent;
+}
+
+/* Login Button */
+.login {
+  flex: 1;
+  background: linear-gradient(125deg, #063333, #169a9a, #065454);
+  border: none;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 16px;
+  color: white;
+  display: flex;
+  text-decoration: none;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Hover Effect for Login */
+.login:hover {
+  background: #095353;
+}
+
+/* Logo Image Styling */
+.headerLogo img {
+  height: 50px;
+  width: 80px;
+  object-fit: contain;
+}
+
+/* Icon Size Adjustment */
+.iconSize {
+  font-size: 30px;
+}
+
+/* For medium screens like 768px */
+@media (max-width: 768px) {
+  .headerLogo img {
+    height: 35px;
+    width: 60px;
+  }
+
+  .iconSize {
+    font-size: 20px; /* Reduced icon size */
+  }
+
+  .headerLink {
+    gap: 15px; /* Reduced gap between icons for smaller screens */
+  }
+
+  .login {
+    padding: 5px 10px;
+  }
+}
+
+/* For smaller screens like 425px, 375px, and 320px */
+@media (max-width: 425px) {
+  .headerLogo img {
+    height: 25px !important;
+    width: auto !important; /* Further reduced logo size */
+  }
+
+  .iconSize {
+    font-size: 10px !important; /* Further reduced icon size */
+    transform: scale(1); /* Ensure icon is not scaled up */
+  }
+
+  .headerLink {
+    gap: 8px; /* Further reduced gap between icons */
+  }
+
+  .login {
+    padding: 5px 8px;
+  }
+}
+
+/* For extremely small screens like 320px */
+@media (max-width: 320px) {
+  .headerLogo img {
+    height: 15px !important;
+    width: auto;
+  }
+
+  .iconSize {
+    font-size: 7px !important; /* Slightly larger than 5px */
+    transform: scale(1); /* Ensure icon is not scaled up */
+  }
+
+  .headerLink {
+    gap: 5px; /* Further reduced gap between icons */
+  }
+
+  .login {
+    padding: 5px 8px;
+  }
+}
