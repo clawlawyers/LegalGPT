@@ -7,6 +7,7 @@ import { logout } from "../reducers/authSlice";
 import { useNavigate } from "react-router-dom";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useMediaQuery } from "@mui/material";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 function HeaderGpt() {
   const currentUser = useSelector((state) => state.auth.user);
@@ -82,7 +83,7 @@ const iconSize = is320
 
           {currentUser ? (
             <button className={Styles.login} >
-              Logout
+              <LogoutIcon sx={{ fontSize: iconSize }} /> 
             </button>
           ) : (
             <div style={{ backgroundColor: "transparent" }}>
