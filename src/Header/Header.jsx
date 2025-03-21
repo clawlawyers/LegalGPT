@@ -13,22 +13,9 @@ function HeaderGpt() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    dispatch(logout());
-    localStorage.removeItem("auth");
-    localStorage.removeItem("persist:root");
-    console.log("Redirecting to Home after logout");
-    navigate("/"); // Redirect to Home page after logout
-  };
+ 
 
 
-const legalLogin=()=>{
-const baseUrl =  LEGAL_ENDPOINT
-
-const encodedUrl = btoa(JSON.stringify(baseUrl))
-
-window.open(`https://www.clawlaw.in/login?redirectURL${encodedUrl}`)
-}
 
 
 
@@ -78,8 +65,8 @@ const iconSize = is320
 
         <div className={Styles.headerLink}>
           <div style={{ backgroundColor: "transparent" }}>
-            <a
-              href="https://clawlaw.in/"
+            <div
+             
               style={{
                 textDecoration: "none",
                 color: "white",
@@ -90,17 +77,17 @@ const iconSize = is320
               <button className={Styles.login} >
                 <HomeIcon   sx={{ fontSize: iconSize }}  />
               </button>
-            </a>
+            </div>
           </div>
 
           {currentUser ? (
-            <button className={Styles.login} onClick={handleLogout}>
+            <button className={Styles.login} >
               Logout
             </button>
           ) : (
             <div style={{ backgroundColor: "transparent" }}>
-            <a
-              href="https://clawlaw.in/"
+            <div
+            
               style={{
                 textDecoration: "none",
                 color: "white",
@@ -111,7 +98,7 @@ const iconSize = is320
               <button className={Styles.login}>
                <AccountCircleIcon sx={{ fontSize: iconSize }} />
               </button>
-            </a>
+            </div>
           </div>
           )}
         </div>

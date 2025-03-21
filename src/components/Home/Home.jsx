@@ -28,7 +28,7 @@ const Home = () => {
     <>
    <>
   <HeaderGpt />
-  <div className="md:h-screen m-auto w-[80%] flex flex-col justify-center items-center pt-[-150px]">
+  <div className="md:h-screen m-auto w-[80%] flex flex-col justify-center items-center pt-[-180px]">
     <div>
       <h1
         className="text-3xl md:text-5xl font-bold p-5 text-center"
