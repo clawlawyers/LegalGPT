@@ -8,22 +8,21 @@ export const NODE_API_ENDPOINT =
     ? "https://claw-app-dev.onrender.com/api/v1"
     : "http://localhost:8000/api/v1";
 
+export const MAINWEBSITE_ENDPOINT =
+  process.env.NODE_ENV === "production"
+    ? "https://clawlaw-dev.netlify.app/api/v1"
+    : "http://localhost:4000";
+
 export const ADIRA_ENDPOINT =
   process.env.NODE_ENV === "production"
     ? // ? "https://claw-app-dev.onrender.com/api/v1"
       "https://adira.clawlaw.in"
     : "https://adira.clawlaw.in";
 
-
-
 export const LEGAL_ENDPOINT =
-process.env.NODE_ENV ==="production"
-?"https://legalgpt.clawlaw.in/"
-:"http://localhost:5177/"
-
-
-
-
+  process.env.NODE_ENV === "production"
+    ? "https://legalgpt.clawlaw.in/"
+    : "http://localhost:5177/";
 
 export const OTP_ENDPOINT =
   process.env.NODE_ENV === "production"
