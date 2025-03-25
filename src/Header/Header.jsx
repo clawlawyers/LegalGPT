@@ -3,25 +3,10 @@ import { Link } from "react-router-dom";
 import clawIcon from "../assets/icons/clawIcon.png";
 import { useSelector, useDispatch } from "react-redux";
 import HomeIcon from "@mui/icons-material/Home";
-import { logout } from "../reducers/authSlice";
-import { useNavigate } from "react-router-dom";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { useMediaQuery } from "@mui/material";
-import LogoutIcon from "@mui/icons-material/Logout";
 import { MAINWEBSITE_ENDPOINT } from "../utils/utils";
 
 function HeaderGpt() {
   const currentUser = useSelector((state) => state.auth.user);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/");
-  };
-  const handleAuthChange = () => {
-    navigate("/login");
-  };
 
   // const openHomepage = () => {
   //   var encodedStringBtoA = btoa(JSON.stringify(currentUser));
