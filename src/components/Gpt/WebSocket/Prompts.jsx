@@ -278,46 +278,61 @@ const Prompts = () => {
     }
   }, [inputText]);
 
+  
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Check if screen is mobile
+  
+    useEffect(() => {
+      const handleResize = () => setIsMobile(window.innerWidth <= 768);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
   return (
     <div className="h-screen overflow-auto m-auto flex flex-col gap-5 justify-center items-center p-3 bg-[#0F0F0FCC]">
       <div className="md:w-[80%]">
         <div className="w-full flex-1 flex flex-col justify-center items-center">
+
           <div
-            style={{
-              backgroundColor: "transparent",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-              paddingBottom: "40px",
-            }}>
-            <div
-              style={{
-                backgroundColor: "transparent",
-                fontSize: "48px",
-                fontWeight: 700,
-                color: "#E5E5E5",
-              }}>
-              Welcome to{" "}
-              <span
-                style={{
-                  padding: 3,
-                  borderLeft: `4px solid #008080`,
-                  background: `linear-gradient(to right, rgba(0,128,128,0.75), rgba(0,128,128,0))`,
-                }}>
-                LegalGPT
-              </span>
-            </div>
-            <div
-              style={{
-                textAlign: "center",
-                paddingTop: 10,
-                fontSize: 16,
-                background: "inherit",
-              }}>
-              The power of AI for your Legal service
-            </div>
-          </div>
+      style={{
+        backgroundColor: "transparent",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
+        paddingBottom: "40px",
+        paddingTop: isMobile ? "30px" : "40px", // Adjust padding for mobile
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: "transparent",
+          fontSize: isMobile ? "32px" : "48px", // Reduce font size for mobile
+          fontWeight: 700,
+          color: "#E5E5E5",
+        }}
+      >
+        Welcome to{" "}
+        <span
+          style={{
+            padding: 3,
+            borderLeft: `4px solid #008080`,
+            background: `linear-gradient(to right, rgba(0,128,128,0.75), rgba(0,128,128,0))`,
+          }}
+        >
+          LegalGPT
+        </span>
+      </div>
+      <div
+        style={{
+          textAlign: "center",
+          paddingTop: isMobile ? "5px" : "10px", // Adjust spacing
+          fontSize: isMobile ? "14px" : "16px", // Reduce text size
+          background: "inherit",
+        }}
+      >
+        The power of AI for your Legal service
+      </div>
+    </div>
           <HomepageSuggestionCards onPromptSelect={onPromptSelect} />
         </div>
         <form
