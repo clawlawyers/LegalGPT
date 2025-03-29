@@ -51,6 +51,7 @@ const Prompts = () => {
   const [fileDialog, setFileDialog] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [fileSubmitLoading, setFileSubmitLoading] = useState(false);
+  const textareaRef = useRef(null)
 
   // useEffect(() => {
   //   const urlParams = new URLSearchParams(window.location.search);
@@ -266,6 +267,17 @@ const Prompts = () => {
     }
   }
 
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      // Reset height to auto to calculate scrollHeight properly
+      textarea.style.height = "auto";
+      // Set height based on the content
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 100)}px`; // 120px is roughly the height for 4 lines of text
+     
+    }
+  }, [inputText]);
+
   return (
     <div className="h-screen overflow-auto m-auto flex flex-col gap-5 justify-center items-center p-3 bg-[#0F0F0FCC]">
       <div className="md:w-[80%]">
@@ -315,12 +327,15 @@ const Prompts = () => {
             });
           }}
           className=" flex gap-2 w-full">
-          <input
+            {/* .............................................................................................textarea.. */}
+          <textarea style={{resize: 'none', overflowY: 'auto' }} 
             required
             placeholder="Add your query..."
-            className="text-black flex-1 p-2 rounded-lg"
+            className="text-black flex-1 p-2 rounded-lg overflow-hidden"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
+            ref={textareaRef}
+            rows="1" 
           />
           <button
             type="button"
@@ -331,11 +346,21 @@ const Prompts = () => {
               border: "none",
               borderRadius: 10,
               cursor: "pointer",
-              marginRight: "5px",
+             
+              width: "60px", // Fixed size for the button
+              height: "50px", // Fixed height for the button
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+        
+
             }}>
-            <FileUploadIcon
+              
+              <FileUploadIcon
               style={{ color: "white", backgroundColor: "transparent" }}
             />
+         
+           
           </button>
 
           <Popover
@@ -429,9 +454,25 @@ const Prompts = () => {
             )}
           </Popover>
           <button
+
+style={{
+  border: "none",
+  borderRadius: 10,
+  cursor: "pointer",
+  marginRight: "5px",
+  width: "60px", // Fixed size for the button
+  height: "50px", // Fixed height for the button
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+
+
+}}
             disabled={inputText === ""}
             type="submit"
             className="rounded-lg">
+
+
             <SendIcon />
           </button>
         </form>

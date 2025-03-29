@@ -447,7 +447,7 @@ export function CasecardGpt({
             transform: "translate(-50%, -50%)",
             boxShadow: 24,
           }}>
-          <div className="w-full h-full rounded-lg p-2 flex flex-col border-2 border-black text-black ">
+          <div className="w-full h-full rounded-lg p-2 flex flex-col border-2 border-black text-black " style={{ overflowY: 'auto'}}>
             <div className="flex justify-between items-center">
               <h1 className="font-semibold">Summary Details</h1>
               <Close

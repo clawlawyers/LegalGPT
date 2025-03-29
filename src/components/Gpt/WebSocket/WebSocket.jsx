@@ -42,6 +42,7 @@ import { CasecardGpt } from "../components/CasecardGpt";
 import markdownit from "markdown-it";
 import fetchWrapper from "../../../utils/fetchWrapper";
 import { useAuthState } from "../../../hooks/useAuthState";
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 
 const languageArr = [
   // "English",
@@ -135,6 +136,9 @@ const WebSocketComponent = () => {
   const [regenerate, setRegenerate] = useState(false);
   const [regenerateMessage, setRegenerateMessage] = useState("");
   const [regenerateMessageIndex, setRegenerateMessageIndex] = useState(0);
+const textareaRef=useRef(null)
+const casesContainerRef = useRef(null);
+
 
   const currentUser = useSelector((state) => state.auth.user);
   const promptsArrSelector = useSelector((state) => state?.prompt?.prompts);
@@ -975,11 +979,39 @@ const WebSocketComponent = () => {
     setSupremeCourtCases(false);
   };
 
+  useEffect(()=>{
+const textarea =textareaRef.current
+
+if(textarea){
+  textarea.style.height="auto"
+  textarea.style.height=`${Math.min(textarea.scrollHeight, 100)}px`
+}
+  },[inputText])
+
+  
+  useEffect(() => {
+    if (divRef.current) {
+      divRef.current.scrollTop = divRef.current.scrollHeight;
+    }
+  }, [promptsArr]);
+  
+
+  // useEffect(() => {
+  //   if (relatedCases?.cases?.length > 0 && divRef.current) {
+  //     divRef.current.scrollTop = divRef.current.scrollHeight;
+  //   }
+  // }, [relatedCases]);
+
+  useEffect(() => {
+    if (relatedCases?.cases?.length > 0 && divRef.current) {
+      divRef.current.scrollTop = divRef.current.scrollHeight;
+    }
+  }, [relatedCases, caseCount]);
   return (
     <>
-      <div className="h-screen w-auto flex flex-col p-3 bg-[#0F0F0FCC]">
-        <div className="ml-5 flex gap-2 items-start justify-start">
-          <p className="text-3xl font-semibold m-0 max-w-fit text-[#018081]">
+      <div className="h-screen w-auto flex flex-col p-3 md:pl-6 bg-[#0F0F0FCC] ">
+        <div className="ml-5 flex gap-2 items-start justify-start ">
+          <p className="text-3xl font-semibold m-0.5 max-w-fit text-[#018081]">
             LegalGPT
           </p>
           <p className="m-0 text-xs pt-1">by CLAW</p>
@@ -1222,14 +1254,17 @@ const WebSocketComponent = () => {
                       ) : null}
                     </div>
                   </div>
+                  // ........................................................................................................................................
+
+                  
                 ) : x.isDocument ? (
                   <div className="flex justify-between items-center bg-[#495057] w-full py-3 pr-3 rounded-lg border-2 border-[#018081]">
                     <div className="flex-1 flex gap-2 items-center pl-1">
                       <DescriptionIcon />
                       <p className="m-0">{x.isDocument}</p>
                     </div>
-                    <div>
-                      <p className="text-[#00CBCD] m-0">FILE UPLOADED</p>
+                    <div className="flex justify-between items-center  gap-3">
+                      <p className="text-[#00CBCD] m-0">FILE UPLOADED</p>  <RemoveRedEyeOutlinedIcon sx={{ fontSize: 22 }}/>
                     </div>
                   </div>
                 ) : (
@@ -1268,7 +1303,7 @@ const WebSocketComponent = () => {
               </>
             )}
             {showCasesDialog ? (
-              <div className="border-2 border-[#018081] rounded bg-[#303030] flex flex-col gap-3 py-2">
+              <div ref={casesContainerRef} className="border-2 border-[#018081] rounded bg-[#303030] flex flex-col gap-3 py-2">
                 <div className="flex flex-col flex-wrap md:flex-row justify-between md:items-center">
                   <p className="font-bold m-0 px-3 text-xl text-white">
                     Reference to High Court Judgements
@@ -1446,14 +1481,18 @@ const WebSocketComponent = () => {
             });
             setMessagesArray(e);
           }}
-          className="flex gap-2 w-full"
+          // className="flex gap-2 w-full"
+          className="flex gap-2 w-full items-end" 
         >
-          <input
+          {/* ............................................................................... */}
+          <textarea    style={{resize: 'none', overflowY: 'auto',minHeight: "50px", }} 
             required
             placeholder="Add your query..."
             className="text-black flex-1 p-2 rounded-lg"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
+            rows="1"
+            ref={textareaRef}
           />
           <button
             type="button"
@@ -1464,7 +1503,11 @@ const WebSocketComponent = () => {
               border: "none",
               borderRadius: 10,
               cursor: "pointer",
-              marginRight: "5px",
+              width: "60px", // Fixed size for the button
+              height: "50px", // Fixed height for the button
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center"
             }}
           >
             <FileUploadIcon
@@ -1569,6 +1612,17 @@ const WebSocketComponent = () => {
             disabled={inputText === ""}
             type="submit"
             className="rounded-lg"
+            style={{
+              border: "none",
+              borderRadius: 10,
+              cursor: "pointer",
+              marginRight: "5px",
+              width: "60px", // Fixed size for the button
+              height: "50px", // Fixed height for the button
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center"
+            }}
           >
             <SendIcon />
           </button>

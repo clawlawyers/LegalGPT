@@ -50,9 +50,11 @@ const SocketSidebar = () => {
           />
         </div>
       </>
+
+
       <div
         className={`z-20 absolute md:relative ${
-          toggleMenu ? "w-2/4 md:w-1/5" : "w-auto"
+          toggleMenu ? "w-2/4 md:w-1/6" : "w-auto"
         } transition-width duration-500 ease-in-out delay-500 bg-[#222222ef] h-full md:h-screen flex flex-col`}
       >
         <div className="absolute right-0 top-1 h-[5%] flex justify-end p-2">
@@ -126,6 +128,7 @@ const SocketSidebar = () => {
           ) : null}
         </div>
       </div>
+      
     </>
   );
 };
