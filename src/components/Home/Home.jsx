@@ -32,13 +32,13 @@ const Home = () => {
   return (
     <>
       <div className="">
-        {init && (
+        {/* {init && (
           <Particles
             options={options}
             className="absolute top-0 left-0 w-full h-full"
             style={{ zIndex: 0, pointerEvents: "none" }} // Ensures clicks pass through
           />
-        )}
+        )} */}
         <div className="relative z-10">
           <HeaderGpt />
           <div className="md:h-full m-auto w-[80%] flex flex-col justify-center items-center mb-0 md:mb-12 pt-[-180px]">
