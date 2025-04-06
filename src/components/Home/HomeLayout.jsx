@@ -58,7 +58,7 @@ const HomeLayout = () => {
       const currentUser = JSON.parse(decodedString);
       localStorage.setItem("token", currentUser.token);
       // if (currentUser) {
-      console.log(currentUser);
+      console.log(currentUser?.currencyType);
       if (currentUser.redirectURL === "legalgpt") {
         console.log(currentUser);
         navigate("/gpt/socket");
