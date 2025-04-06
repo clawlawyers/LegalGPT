@@ -352,6 +352,7 @@ export function CasecardGpt({
             backgroundColor: "white",
             position: "absolute",
             top: "50%",
+            
             left: "50%",
             width: "80%",
             height: "90%",
