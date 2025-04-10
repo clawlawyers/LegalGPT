@@ -874,10 +874,14 @@ const WebSocketComponent = () => {
       );
 
       const response = await fetchData.json();
+      const parsedJudgments = JSON.parse(response.data.judgments);
+      // console.log(parsedJudgments);
+      const answer = parsedJudgments.answer;
+      console.log(answer); // Output: Based on the provided context...
 
-      console.log(response.data.judgments);
-      const responsetext = formatText(response.data.judgments);
-      setRefSupremeCase(md.render(responsetext));
+      // console.log(response.data.judgments);
+      // const responsetext = formatText(response.data.judgments);
+      setRefSupremeCase(md.render(answer));
     } catch (error) {
       console.log(error);
       toast.error(error.message);
