@@ -51,7 +51,7 @@ const Prompts = () => {
   const [fileDialog, setFileDialog] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [fileSubmitLoading, setFileSubmitLoading] = useState(false);
-  const textareaRef = useRef(null)
+  const textareaRef = useRef(null);
 
   // useEffect(() => {
   //   const urlParams = new URLSearchParams(window.location.search);
@@ -79,7 +79,11 @@ const Prompts = () => {
           Authorization: `Bearer ${currentUser.jwt}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt: message.prompt, model: "legalGPT" }),
+        body: JSON.stringify({
+          prompt: message.prompt,
+          model: "legalGPT",
+          currencyType: currentUser?.currencyType,
+        }),
       });
       const { data } = await res.json();
       console.log(data);
@@ -120,7 +124,10 @@ const Prompts = () => {
         `${NODE_API_ENDPOINT}/gpt/session/appendMessage`,
         {
           method: "POST",
-          body: JSON.stringify(message),
+          body: JSON.stringify({
+            ...message,
+            currencyType: currentUser?.currencyType,
+          }),
           headers: {
             Authorization: `Bearer ${currentUser.jwt}`,
             "Content-Type": "application/json",
@@ -192,6 +199,7 @@ const Prompts = () => {
         body: JSON.stringify({
           prompt: fileData.data.fetchUploaded.document,
           model: "legalGPT",
+          currencyType: currentUser?.currencyType,
         }),
       });
       const { data } = await res.json();
@@ -232,7 +240,11 @@ const Prompts = () => {
           Authorization: `Bearer ${currentUser.jwt}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt: selectedPrompt, model: "legalGPT" }),
+        body: JSON.stringify({
+          prompt: selectedPrompt,
+          model: "legalGPT",
+          currencyType: currentUser?.currencyType,
+        }),
       });
       const { data } = await res.json();
       console.log(data);
@@ -274,65 +286,62 @@ const Prompts = () => {
       textarea.style.height = "auto";
       // Set height based on the content
       textarea.style.height = `${Math.min(textarea.scrollHeight, 100)}px`; // 120px is roughly the height for 4 lines of text
-     
     }
   }, [inputText]);
 
-  
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Check if screen is mobile
-  
-    useEffect(() => {
-      const handleResize = () => setIsMobile(window.innerWidth <= 768);
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }, []);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Check if screen is mobile
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div className="h-screen overflow-auto m-auto flex flex-col gap-5 justify-center items-center p-3 bg-[#0F0F0FCC]">
       <div className="md:w-[80%]">
         <div className="w-full flex-1 flex flex-col justify-center items-center">
-
           <div
-      style={{
-        backgroundColor: "transparent",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        textAlign: "center",
-        paddingBottom: "40px",
-        paddingTop: isMobile ? "30px" : "40px", // Adjust padding for mobile
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: "transparent",
-          fontSize: isMobile ? "32px" : "48px", // Reduce font size for mobile
-          fontWeight: 700,
-          color: "#E5E5E5",
-        }}
-      >
-        Welcome to{" "}
-        <span
-          style={{
-            padding: 3,
-            borderLeft: `4px solid #008080`,
-            background: `linear-gradient(to right, rgba(0,128,128,0.75), rgba(0,128,128,0))`,
-          }}
-        >
-          LegalGPT
-        </span>
-      </div>
-      <div
-        style={{
-          textAlign: "center",
-          paddingTop: isMobile ? "5px" : "10px", // Adjust spacing
-          fontSize: isMobile ? "14px" : "16px", // Reduce text size
-          background: "inherit",
-        }}
-      >
-        The power of AI for your Legal service
-      </div>
-    </div>
+            style={{
+              backgroundColor: "transparent",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              paddingBottom: "40px",
+              paddingTop: isMobile ? "30px" : "40px", // Adjust padding for mobile
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "transparent",
+                fontSize: isMobile ? "32px" : "48px", // Reduce font size for mobile
+                fontWeight: 700,
+                color: "#E5E5E5",
+              }}
+            >
+              Welcome to{" "}
+              <span
+                style={{
+                  padding: 3,
+                  borderLeft: `4px solid #008080`,
+                  background: `linear-gradient(to right, rgba(0,128,128,0.75), rgba(0,128,128,0))`,
+                }}
+              >
+                LegalGPT
+              </span>
+            </div>
+            <div
+              style={{
+                textAlign: "center",
+                paddingTop: isMobile ? "5px" : "10px", // Adjust spacing
+                fontSize: isMobile ? "14px" : "16px", // Reduce text size
+                background: "inherit",
+              }}
+            >
+              The power of AI for your Legal service
+            </div>
+          </div>
           <HomepageSuggestionCards onPromptSelect={onPromptSelect} />
         </div>
         <form
@@ -341,16 +350,18 @@ const Prompts = () => {
               prompt: inputText,
             });
           }}
-          className=" flex gap-2 w-full">
-            {/* .............................................................................................textarea.. */}
-          <textarea style={{resize: 'none', overflowY: 'auto' }} 
+          className=" flex gap-2 w-full"
+        >
+          {/* .............................................................................................textarea.. */}
+          <textarea
+            style={{ resize: "none", overflowY: "auto" }}
             required
             placeholder="Add your query..."
             className="text-black flex-1 p-2 rounded-lg overflow-hidden"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             ref={textareaRef}
-            rows="1" 
+            rows="1"
           />
           <button
             type="button"
@@ -361,21 +372,17 @@ const Prompts = () => {
               border: "none",
               borderRadius: 10,
               cursor: "pointer",
-             
+
               width: "60px", // Fixed size for the button
               height: "50px", // Fixed height for the button
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-        
-
-            }}>
-              
-              <FileUploadIcon
+            }}
+          >
+            <FileUploadIcon
               style={{ color: "white", backgroundColor: "transparent" }}
             />
-         
-           
           </button>
 
           <Popover
@@ -387,7 +394,8 @@ const Prompts = () => {
             anchorOrigin={{
               vertical: "bottom",
               horizontal: "left",
-            }}>
+            }}
+          >
             {!fileDialog ? (
               <div className="p-3 bg-[#C2FFFF] w-full border-4 border-[#018081]">
                 <div className="flex w-full justify-between items-center gap-28">
@@ -408,7 +416,8 @@ const Prompts = () => {
                     margin="normal"
                     size="small"
                     value={selectedLanguage}
-                    onChange={handleChange}>
+                    onChange={handleChange}
+                  >
                     {languageArr.sort().map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}
@@ -423,7 +432,8 @@ const Prompts = () => {
                     className="rounded-lg"
                     style={{
                       background: "linear-gradient(90deg,#018081,#001B1B)",
-                    }}>
+                    }}
+                  >
                     Continue
                   </button>
                 </div>
@@ -469,25 +479,21 @@ const Prompts = () => {
             )}
           </Popover>
           <button
-
-style={{
-  border: "none",
-  borderRadius: 10,
-  cursor: "pointer",
-  marginRight: "5px",
-  width: "60px", // Fixed size for the button
-  height: "50px", // Fixed height for the button
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-
-
-}}
+            style={{
+              border: "none",
+              borderRadius: 10,
+              cursor: "pointer",
+              marginRight: "5px",
+              width: "60px", // Fixed size for the button
+              height: "50px", // Fixed height for the button
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
             disabled={inputText === ""}
             type="submit"
-            className="rounded-lg">
-
-
+            className="rounded-lg"
+          >
             <SendIcon />
           </button>
         </form>

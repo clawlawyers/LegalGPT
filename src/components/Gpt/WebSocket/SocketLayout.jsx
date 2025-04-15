@@ -35,7 +35,7 @@ const SocketLayout = () => {
       const response = await axios.post(
         `${NODE_API_ENDPOINT}/gpt/storeUsedTime`,
         {
-          // engagementData
+          currencyType: currentUser?.currencyType,
         },
         {
           headers: {

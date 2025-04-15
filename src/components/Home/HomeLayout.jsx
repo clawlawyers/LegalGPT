@@ -7,7 +7,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import FooterBanner from "../../FooterBanner/FooterBanner";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setLoadUserSessions,
   setMessageIdPromptData,
@@ -21,6 +21,8 @@ const HomeLayout = () => {
   const params = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.auth.user);
+
   // console.log(params);
 
   // const urlParams = new URLSearchParams(window.location.search);
@@ -81,6 +83,7 @@ const HomeLayout = () => {
             body: JSON.stringify({
               prompt: currentUser.prompt,
               model: "legalGPT",
+              currencyType: currentUser?.currencyType,
             }),
           });
           const { data } = await res.json();
@@ -130,7 +133,10 @@ const HomeLayout = () => {
   async function setUserGptResponse(message, token) {
     const res = await fetch(`${NODE_API_ENDPOINT}/gpt/session/appendMessage`, {
       method: "POST",
-      body: JSON.stringify(message),
+      body: JSON.stringify({
+        ...message,
+        currencyType: currentUser?.currencyType,
+      }),
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -151,7 +157,8 @@ const HomeLayout = () => {
       radial-gradient(circle at 100% 90%, #018585, transparent 15%)
       `,
         width: "100%",
-      }}>
+      }}
+    >
       <Outlet />
       <div
         style={{

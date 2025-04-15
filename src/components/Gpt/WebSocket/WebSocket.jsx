@@ -190,7 +190,7 @@ const WebSocketComponent = () => {
     console.log("triggerred");
     console.log(params.sessionId);
     const res = await fetch(
-      `${NODE_API_ENDPOINT}/gpt/session/${loadPromptHistory}`,
+      `${NODE_API_ENDPOINT}/gpt/session/${loadPromptHistory}/${currentUser?.currencyType}`,
       {
         headers: {
           Authorization: `Bearer ${currentUser.jwt}`,
@@ -209,7 +209,7 @@ const WebSocketComponent = () => {
   async function fetchSessionMessagesonReload() {
     console.log("triggerred");
     const res = await fetch(
-      `${NODE_API_ENDPOINT}/gpt/session/${params.sessionId}`,
+      `${NODE_API_ENDPOINT}/gpt/session/${params.sessionId}/${currentUser?.currencyType}`,
       {
         headers: {
           Authorization: `Bearer ${currentUser.jwt}`,
@@ -240,10 +240,20 @@ const WebSocketComponent = () => {
   // ]);
 
   useEffect(() => {
-    const newSocket = new WebSocket(
-      // "wss://20.198.24.104:8000/api/v1/gpt/generate"
-      "wss://api.clawlaw.in:8000/api/v1/gpt/generate"
-    );
+    let newSocket;
+    if (currentUser?.currencyType === "INR") {
+      newSocket = new WebSocket(
+        "wss://api.clawlaw.in:8000/api/v1/gpt/generate"
+      );
+    } else if (currentUser?.currencyType === "USD") {
+      newSocket = new WebSocket(
+        "wss://api.clawlaw.in:8000/api/v1/gpt/us_generate"
+      );
+    } else if (currentUser?.currencyType === "GBP") {
+      newSocket = new WebSocket(
+        "wss://api.clawlaw.in:8000/api/v1/gpt/uk_generate"
+      );
+    }
 
     newSocket.onopen = () => {
       console.log("WebSocket connection established");
@@ -343,7 +353,10 @@ const WebSocketComponent = () => {
         `${NODE_API_ENDPOINT}/gpt/session/appendMessage`,
         {
           method: "POST",
-          body: JSON.stringify(message),
+          body: JSON.stringify({
+            ...message,
+            currencyType: currentUser?.currencyType,
+          }),
           headers: {
             Authorization: `Bearer ${currentUser.jwt}`,
             "Content-Type": "application/json",
@@ -570,7 +583,7 @@ const WebSocketComponent = () => {
     console.log("rendered");
     if (regenerateMessage.length === 0) return;
 
-    const typeText = () => {
+    const typeText = async () => {
       if (regenerateMessageIndex < regenerateMessage.length) {
         setRegenerateMessageIndex((prev) => prev + 1);
         dispatch(
@@ -584,6 +597,53 @@ const WebSocketComponent = () => {
           console.log("Message is Finished");
           // setRegenerate(false);
           // setMessage("");
+          console.log(
+            regenerateMessage
+              .join("")
+              .replaceAll("\\\\n\\\\n", "<br/>")
+              .replaceAll("\\\\n", "<br/>")
+              .replaceAll("\\n\\n", "<br/>")
+              .replaceAll("\\n", "<br/>")
+              .replaceAll("\n", "<br/>")
+              .replaceAll(/\*([^*]+)\*/g, "<strong>$1</strong>")
+              .replaceAll("\\", "")
+              .replaceAll('"', "")
+              .replaceAll(":", " :")
+              .replaceAll("#", "")
+          );
+          const appendRegeneratedMessage = await fetch(
+            `${NODE_API_ENDPOINT}/gpt/regenerate-response`,
+            {
+              method: "POST",
+              body: JSON.stringify({
+                response: regenerateMessage
+                  .join("")
+                  .replaceAll("\\\\n\\\\n", "<br/>")
+                  .replaceAll("\\\\n", "<br/>")
+                  .replaceAll("\\n\\n", "<br/>")
+                  .replaceAll("\\n", "<br/>")
+                  .replaceAll("\n", "<br/>")
+                  .replaceAll(/\*([^*]+)\*/g, "<strong>$1</strong>")
+                  .replaceAll("\\", "")
+                  .replaceAll('"', "")
+                  .replaceAll(":", " :")
+                  .replaceAll("#", ""),
+                sessionId: params.sessionId,
+                currencyType: currentUser?.currencyType,
+              }),
+              headers: {
+                Authorization: `Bearer ${currentUser.jwt}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (!appendRegeneratedMessage.ok) {
+            throw new Error("Failed to regenerate response!");
+          }
+          const appendRegeneratedMessageData =
+            await appendRegeneratedMessage.json();
+          console.log(appendRegeneratedMessageData);
+          console.log(editIndex);
         }
       }
     };
@@ -660,6 +720,7 @@ const WebSocketComponent = () => {
         },
         body: JSON.stringify({
           context: promptsArr[promptsArr.length - 1].text,
+          currencyType: currentUser?.currencyType,
         }),
       });
       if (!res.ok) {
@@ -1022,7 +1083,8 @@ const WebSocketComponent = () => {
         {promptsArr.length > 0 ? (
           <div
             ref={divRef}
-            className="h-[95%] overflow-auto flex flex-col gap-2">
+            className="h-[95%] overflow-auto flex flex-col gap-2"
+          >
             {promptsArr.map((x, index) => (
               <div key={index}>
                 {/* <div className="flex items-center justify-end">
@@ -1052,7 +1114,8 @@ const WebSocketComponent = () => {
                       style={{
                         background: x.isUser ? "transparent" : "#303030",
                         borderColor: x.isUser ? "transparent" : "#018081",
-                      }}>
+                      }}
+                    >
                       {(textLoading || translationLoading) &&
                       editIndex == index ? (
                         <div className="h-full w-full p-3 flex flex-col gap-1">
@@ -1073,7 +1136,8 @@ const WebSocketComponent = () => {
                           key={index}
                           dangerouslySetInnerHTML={{
                             __html: x.text,
-                          }}>
+                          }}
+                        >
                           {/* {x.text} */}
                         </p>
                       )}
@@ -1097,7 +1161,8 @@ const WebSocketComponent = () => {
                                           ? "none"
                                           : "auto",
                                     }}
-                                    className="m-0 border-2 border-white text-white rounded-lg py-1 px-3 cursor-pointer max-w-[7.5rem] flex justify-center items-center bg-[#018081] hover:bg-opacity-75">
+                                    className="m-0 border-2 border-white text-white rounded-lg py-1 px-3 cursor-pointer max-w-[7.5rem] flex justify-center items-center bg-[#018081] hover:bg-opacity-75"
+                                  >
                                     {casesLoading ? (
                                       <CircularProgress
                                         size={15}
@@ -1117,7 +1182,8 @@ const WebSocketComponent = () => {
                                           promptsArr[index - 1].text
                                       );
                                     }}
-                                    className="m-0 border-2 border-white text-white max-w-[7rem] rounded-lg py-1 px-3 cursor-pointer flex justify-center items-center bg-[#018081] hover:bg-opacity-75">
+                                    className="m-0 border-2 border-white text-white max-w-[7rem] rounded-lg py-1 px-3 cursor-pointer flex justify-center items-center bg-[#018081] hover:bg-opacity-75"
+                                  >
                                     {relevantCaseLoading ? (
                                       <CircularProgress
                                         size={15}
@@ -1129,7 +1195,8 @@ const WebSocketComponent = () => {
                                   </p>
                                   <p
                                     onClick={handleShowSupremeCourtJudgements}
-                                    className="m-0 border-2 border-white text-white max-w-[9rem] rounded-lg py-1 px-3 cursor-pointer flex justify-center items-center bg-[#018081] hover:bg-opacity-75">
+                                    className="m-0 border-2 border-white text-white max-w-[9rem] rounded-lg py-1 px-3 cursor-pointer flex justify-center items-center bg-[#018081] hover:bg-opacity-75"
+                                  >
                                     {supremeCourtLoading ? (
                                       <CircularProgress
                                         size={15}
@@ -1146,30 +1213,37 @@ const WebSocketComponent = () => {
                             ""
                           )}
                           <div className="m-0 flex  items-center gap-3">
-                            <div>
-                              {textLoading && editIndex == index ? (
-                                <div className="flex items-center gap-2">
-                                  <CircularProgress size={15} color="inherit" />
-                                  <p className="m-0 text-[#018081]">
-                                    Regenerating Response...
-                                  </p>
-                                </div>
-                              ) : (
-                                <div
-                                  className="flex items-center gap-1 cursor-pointer "
-                                  onClick={() =>
-                                    handleRegenerateResponse(index)
-                                  }>
-                                  <img
-                                    className="w-4 h-4"
-                                    src={regenerateIcon}
-                                  />
-                                  <p className="m-0 hover:text-white">
-                                    Regenerate
-                                  </p>
-                                </div>
-                              )}
-                            </div>
+                            {promptsArr.length - 1 == index && !x.user && (
+                              <div>
+                                {textLoading && editIndex == index ? (
+                                  <div className="flex items-center gap-2">
+                                    <CircularProgress
+                                      size={15}
+                                      color="inherit"
+                                    />
+                                    <p className="m-0 text-[#018081]">
+                                      Regenerating Response...
+                                    </p>
+                                  </div>
+                                ) : (
+                                  <div
+                                    className="flex items-center gap-1 cursor-pointer "
+                                    onClick={() =>
+                                      handleRegenerateResponse(index)
+                                    }
+                                  >
+                                    <img
+                                      className="w-4 h-4"
+                                      src={regenerateIcon}
+                                    />
+                                    <p className="m-0 hover:text-white">
+                                      Regenerate
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
                             <div>
                               {translationLoading && editIndex == index ? (
                                 <div className="flex items-center gap-2">
@@ -1194,7 +1268,8 @@ const WebSocketComponent = () => {
                                       className="m-0 max-w-fit hover:text-white"
                                       onClick={(e) =>
                                         handleTranslateClick(e, index)
-                                      }>
+                                      }
+                                    >
                                       Translate
                                     </p>
                                   </div>
@@ -1207,7 +1282,8 @@ const WebSocketComponent = () => {
                                     anchorOrigin={{
                                       vertical: "bottom",
                                       horizontal: "left",
-                                    }}>
+                                    }}
+                                  >
                                     {languageArr.sort().map((x, i) => (
                                       <p
                                         onClick={(e) => {
@@ -1215,7 +1291,8 @@ const WebSocketComponent = () => {
                                           handleTranslatePrompt(x);
                                         }}
                                         key={i}
-                                        className="m-0 text-[#018081] py-1 px-4 cursor-pointer border-b border-[#018081]">
+                                        className="m-0 text-[#018081] py-1 px-4 cursor-pointer border-b border-[#018081]"
+                                      >
                                         {x}
                                       </p>
                                     ))}
@@ -1241,7 +1318,8 @@ const WebSocketComponent = () => {
                                   viewBox="0 0 24 24"
                                   className="cursor-pointer"
                                   onClick={() => handleAudioPlayerClick(index)}
-                                  fill="white">
+                                  fill="white"
+                                >
                                   <path d="M19 7.358v15.642l-8-5v-.785l8-9.857zm3-6.094l-1.548-1.264-3.446 4.247-6.006 3.753v3.646l-2 2.464v-6.11h-4v10h.843l-3.843 4.736 1.548 1.264 18.452-22.736z" />
                                 </svg>
                               )}
@@ -1290,7 +1368,8 @@ const WebSocketComponent = () => {
                       <p
                         onClick={() => setInputText(x)}
                         className="border-2 border-gray-400 rounded p-2 cursor-pointer m-0 w-full hover:border-white hover:text-white"
-                        key={index}>
+                        key={index}
+                      >
                         {x}
                       </p>
                     ))}
@@ -1301,7 +1380,8 @@ const WebSocketComponent = () => {
             {showCasesDialog ? (
               <div
                 ref={casesContainerRef}
-                className="border-2 border-[#018081] rounded bg-[#303030] flex flex-col gap-3 py-2">
+                className="border-2 border-[#018081] rounded bg-[#303030] flex flex-col gap-3 py-2"
+              >
                 <div className="flex flex-col flex-wrap md:flex-row justify-between md:items-center">
                   <p className="font-bold m-0 px-3 text-xl text-white">
                     Reference to High Court Judgements
@@ -1314,13 +1394,15 @@ const WebSocketComponent = () => {
                         background: "white",
                         borderRadius: "4px",
                       }}
-                      size="small">
+                      size="small"
+                    >
                       <Select
                         value={courtName}
                         onChange={handleHighCourtChange}
                         displayEmpty
                         autoWidth
-                        inputProps={{ "aria-label": "Without label" }}>
+                        inputProps={{ "aria-label": "Without label" }}
+                      >
                         <MenuItem disabled value="">
                           <em>Select a High Court</em>
                         </MenuItem>
@@ -1341,7 +1423,8 @@ const WebSocketComponent = () => {
                       gap: 5,
                       marginTop: 5,
                       padding: "0px 10px",
-                    }}>
+                    }}
+                  >
                     <>
                       {relatedCases.cases
                         .slice(0, caseCount)
@@ -1366,7 +1449,8 @@ const WebSocketComponent = () => {
                           onClick={() =>
                             setCaseCount((caseCount) => caseCount + 2)
                           }
-                          className="m-0 border-2 border-white text-white rounded-lg py-1 px-3 cursor-pointer max-w-fit flex justify-center items-center">
+                          className="m-0 border-2 border-white text-white rounded-lg py-1 px-3 cursor-pointer max-w-fit flex justify-center items-center"
+                        >
                           Load More...
                         </p>
                       </div>
@@ -1405,7 +1489,8 @@ const WebSocketComponent = () => {
                       className="text-sm"
                       dangerouslySetInnerHTML={{
                         __html: refRelevantCase,
-                      }}></div>
+                      }}
+                    ></div>
                   ) : (
                     <div className="h-full w-full p-3 flex flex-col gap-1">
                       <div className="w-full h-2 bg-slate-600 animate-pulse  rounded-full"></div>
@@ -1429,7 +1514,8 @@ const WebSocketComponent = () => {
                     display: "flex",
                     flexDirection: "column",
                     gap: "12px",
-                  }}>
+                  }}
+                >
                   <div className="flex justify-between items-center">
                     <p className="font-bold m-0 text-2xl text-white">
                       Reference to Supreme Court Judgements
@@ -1440,7 +1526,8 @@ const WebSocketComponent = () => {
                       className="text-sm"
                       dangerouslySetInnerHTML={{
                         __html: refSupremeCase,
-                      }}>
+                      }}
+                    >
                       {/* <ReactMarkdown>{refSupremeCase}</ReactMarkdown> */}
                       {/* {refSupremeCase}/ */}
                     </div>
@@ -1473,7 +1560,8 @@ const WebSocketComponent = () => {
             setMessagesArray(e);
           }}
           // className="flex gap-2 w-full"
-          className="flex gap-2 w-full items-end">
+          className="flex gap-2 w-full items-end"
+        >
           {/* ............................................................................... */}
           <textarea
             style={{ resize: "none", overflowY: "auto", minHeight: "50px" }}
@@ -1499,7 +1587,8 @@ const WebSocketComponent = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-            }}>
+            }}
+          >
             <FileUploadIcon
               style={{ color: "white", backgroundColor: "transparent" }}
             />
@@ -1514,7 +1603,8 @@ const WebSocketComponent = () => {
             anchorOrigin={{
               vertical: "bottom",
               horizontal: "left",
-            }}>
+            }}
+          >
             {!fileDialog ? (
               <div className="p-3 bg-[#C2FFFF] w-full border-4 border-[#018081]">
                 <div className="flex w-full justify-between items-center gap-28">
@@ -1535,7 +1625,8 @@ const WebSocketComponent = () => {
                     margin="normal"
                     size="small"
                     value={selectedLanguage}
-                    onChange={handleChange}>
+                    onChange={handleChange}
+                  >
                     {multilingualSupportLanguages.sort().map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}
@@ -1550,7 +1641,8 @@ const WebSocketComponent = () => {
                     className="rounded-lg"
                     style={{
                       background: "linear-gradient(90deg,#018081,#001B1B)",
-                    }}>
+                    }}
+                  >
                     Continue
                   </button>
                 </div>
@@ -1609,7 +1701,8 @@ const WebSocketComponent = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-            }}>
+            }}
+          >
             <SendIcon />
           </button>
         </form>
