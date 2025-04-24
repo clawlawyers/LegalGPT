@@ -10,7 +10,7 @@ export const NODE_API_ENDPOINT =
 
 export const MAINWEBSITE_ENDPOINT =
   process.env.NODE_ENV === "production"
-    ? "https://clawlaw-dev.netlify.app/api/v1"
+    ? "https://www.clawlaw.in"
     : "http://localhost:4000";
 
 export const ADIRA_ENDPOINT =
