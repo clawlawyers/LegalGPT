@@ -24,6 +24,7 @@ import RefundPolicy from "./RefundPolicy/RefundPolicy";
 import TermsAndConditions from "./Terms & Conditions/TermsAndConditions";
 import ShippingPolicy from "./ShippingPolicy/ShippingPolicy";
 
+
 function App() {
   const dispatch = useDispatch();
 
@@ -80,6 +81,7 @@ function App() {
 
   return (
     <div className="App">
+      
       <RouterProvider router={router} />
       <Toaster />
     </div>

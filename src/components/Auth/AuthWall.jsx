@@ -52,7 +52,7 @@ export default function AuthWall() {
         }}
       >
         <CircularProgress style={{ color: "white" }} />
-        <div>Loading Auth...</div>
+        <div>Loading ...</div>
       </div>
     );
   } else if (!isAuthLoading && !currentUser) {
