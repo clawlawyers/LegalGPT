@@ -160,7 +160,8 @@
 }
 
 .card-hover:hover {
-   border-color: #00ffff; /* Tailwind's blue-500 */
+   /* border-color: #00ffff; */
+   border-color: green;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   transform: scale(1.01);
 }
