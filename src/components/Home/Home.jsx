@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import HeaderGpt from "../../Header/Header";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import './Home.css';
 
 // const prodArr = [
 //   {
@@ -42,7 +43,7 @@ const Home = () => {
         <div className="relative z-10">
           <HeaderGpt />
           <div className="md:h-full m-auto w-[80%] flex flex-col justify-center items-center mb-0 md:mb-12 pt-[-180px]">
-            <div>
+            <div className="heading">
               <h1
                 className="text-3xl md:text-5xl font-bold mt-5 p-5 text-center"
                 style={{
@@ -71,7 +72,7 @@ const Home = () => {
 
             <div className="mt-12 h-full md:h-72 w-full grid md:grid-cols-2 items-center justify-center gap-5">
               {/* {prodArr.map((x, index) => ( */}
-              <div className="grid md:grid-cols-[30%_70%] w-full h-full justify-center items-center border-2 rounded-lg p-3">
+              <div className="grid md:grid-cols-[30%_70%] w-full h-full justify-center items-center border-2 rounded-lg p-3 left-div card-hover">
                 <div className="w-full h-full flex items-center justify-center">
                   <img className="w-24 h-24" src={caseSearchIcon} />
                 </div>
@@ -87,7 +88,7 @@ const Home = () => {
                       making your legal journey faster and easier.
                     </p>
 
-                    <button
+                    <button className="exp-button"
                       onClick={() => {
                         if (currentUser?.currencyType === "INR") {
                           navigate("/case/search");
@@ -103,7 +104,7 @@ const Home = () => {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-[30%_70%] w-full h-full justify-center items-center border-2 rounded-lg p-3">
+              <div className="grid md:grid-cols-[30%_70%] w-full h-full justify-center items-center border-2 rounded-lg p-3 right-div card-hover">
                 <div className="w-full h-full flex items-center justify-center">
                   <img className="w-24 h-24" src={legalGptIcon} />
                 </div>
@@ -119,7 +120,7 @@ const Home = () => {
                       document searches, and unlock AI-driven legal
                       intelligence.
                     </p>
-                    <button onClick={() => navigate("/gpt/socket")}>
+                    <button className="exp-button" onClick={() => navigate("/gpt/socket")}>
                       Explore Now
                     </button>
                   </div>

@@ -4,6 +4,7 @@ import clawIcon from "../assets/icons/clawIcon.png";
 import { useSelector, useDispatch } from "react-redux";
 import HomeIcon from "@mui/icons-material/Home";
 import { MAINWEBSITE_ENDPOINT } from "../utils/utils";
+// import '../Home/Home.css'
 
 function HeaderGpt() {
   const currentUser = useSelector((state) => state.auth.user);
@@ -54,7 +55,7 @@ function HeaderGpt() {
                 backgroundColor: "transparent",
                 transition: "color 0.3s ease",
               }}>
-              <button className={Styles.login}>
+              <button className={`${Styles.login} exp-button`}>
                 <HomeIcon sx={{}} onClick={openHomepage} />
               </button>
             </div>
