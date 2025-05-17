@@ -312,7 +312,7 @@ const Prompts = () => {
               paddingTop: isMobile ? "30px" : "40px", // Adjust padding for mobile
             }}
           >
-            <div
+            <div className="heading "
               style={{
                 backgroundColor: "transparent",
                 fontSize: isMobile ? "32px" : "48px", // Reduce font size for mobile
@@ -331,7 +331,7 @@ const Prompts = () => {
                 LegalGPT
               </span>
             </div>
-            <div
+            <div className="uppar-div"
               style={{
                 textAlign: "center",
                 paddingTop: isMobile ? "5px" : "10px", // Adjust spacing
@@ -350,7 +350,7 @@ const Prompts = () => {
               prompt: inputText,
             });
           }}
-          className=" flex gap-2 w-full"
+          className=" flex gap-2 w-full form-div"
         >
           {/* .............................................................................................textarea.. */}
           <textarea
@@ -363,7 +363,8 @@ const Prompts = () => {
             ref={textareaRef}
             rows="1"
           />
-          <button
+          <button 
+          className="exp-button"
             type="button"
             aria-describedby={id}
             variant="contained"
@@ -478,7 +479,7 @@ const Prompts = () => {
               </div>
             )}
           </Popover>
-          <button
+          <button  
             style={{
               border: "none",
               borderRadius: 10,
@@ -492,7 +493,7 @@ const Prompts = () => {
             }}
             disabled={inputText === ""}
             type="submit"
-            className="rounded-lg"
+            className="rounded-lg exp-button"
           >
             <SendIcon />
           </button>

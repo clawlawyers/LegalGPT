@@ -106,7 +106,7 @@ const SocketSidebar = () => {
                     handleNewChat();
                     navigate("/gpt/socket");
                   }}
-                  className="w-full rounded-lg"
+                   className="w-full rounded-lg exp-button"
                 >
                   Start New Chat
                 </button>

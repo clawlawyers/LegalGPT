@@ -1,6 +1,6 @@
 import React from "react";
-import { motion } from "framer-motion";
 import mindIcon from "../../../assets/icons/mind.png";
+import { motion, AnimatePresence, delay } from 'framer-motion';
 
 const cardDisplayArr = [
   "Request information about specific laws or acts.",
@@ -18,26 +18,61 @@ const prompArr = [
 ];
 
 const HomepageSuggestionCards = ({ onPromptSelect }) => {
+
+const parentFadeIn = {
+  hidden: { opacity: 0, y: -50 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      delay: 2, // delay before it shows
+      when: "beforeChildren", // children animate after container
+      staggerChildren: 0.2,   // this will trigger the child animation one by one
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, x: -50 },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.4,
+      ease: "easeOut",
+    },
+  },
+};
+
+
   return (
     <div className="flex flex-col gap-2 items-center justify-center">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {cardDisplayArr.map((x, index) => (
-          <motion.div
-            key={index}
-            whileTap={{ scale: "0.95" }}
-            className="cursor-pointer flex flex-col justify-between items-center p-2 rounded tracking-wide text-xs bg-[#2D2D2D] hover:bg-[#4b4b4b] border text-center"
-          >
-            <div
-              onClick={() => onPromptSelect(prompArr[index])}
-              className="flex flex-col gap-2 items-center justify-center p-3"
-            >
-              <img className="h-8 w-8" src={mindIcon} />
-              <p className="flex-1 m-0">{x}</p>
-            </div>
-          </motion.div>
-        ))}
+<motion.div
+  className="grid grid-cols-2 md:grid-cols-4 gap-4"
+  variants={parentFadeIn}
+  initial="hidden"
+  animate="show"
+>
+  {cardDisplayArr.map((x, index) => (
+    <motion.div
+      key={index}
+      variants={cardVariants}
+      whileTap={{ scale: 0.95 }}
+      className="cursor-pointer flex flex-col justify-between items-center p-2 rounded tracking-wide text-xs bg-[#2D2D2D] hover:bg-[#4b4b4b] border text-center"
+    >
+      <div
+        onClick={() => onPromptSelect(prompArr[index])}
+        className="flex flex-col gap-2 items-center justify-center p-3"
+      >
+        <img className="h-8 w-8" src={mindIcon} />
+        <p className="flex-1 m-0">{x}</p>
       </div>
-      <p className="pb-3">
+    </motion.div>
+  ))}
+</motion.div>
+
+      <p className="pb-3 card-text">
         Type your query below or select an above suggestion to start...
       </p>
     </div>

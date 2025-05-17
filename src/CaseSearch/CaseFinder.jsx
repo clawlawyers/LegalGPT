@@ -398,7 +398,7 @@ export default function CaseFinder({
             </form>
           </div>
           <div className={Styles.inputGrid}>
-            <div className="flex-1 left-div">
+            <div className="flex-1 left-box">
               <div>Court Name</div>
               <FormControl
                 sx={{ width: "100%" }}
@@ -468,7 +468,7 @@ export default function CaseFinder({
                 )}
               </FormControl>
             </div>
-            <div className="right-div" style={{ display: "flex", gap: 10 }}>
+            <div className="right-box" style={{ display: "flex", gap: 10 }}>
               <div>
                 <div>Search Start Date</div>
                 <DatePicker

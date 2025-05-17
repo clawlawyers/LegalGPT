@@ -4,7 +4,6 @@
   opacity: 0;
   transform: translateY(-60px);
   animation: slideDownHeading 0.8s ease forwards;
-   animation-delay: 0.9s; 
 }
 
 @keyframes slideDownHeading {
@@ -20,6 +19,7 @@
   transform: translateY(-60px);
   animation: slideDownUpperDiv 0.8s ease forwards;
  /* Heading ke baad thoda delay */
+  animation-delay: 0.9s; 
 }
 
 @keyframes slideDownUpperDiv {
@@ -182,3 +182,64 @@
   }
 }
 
+
+.left-box {
+  /* text-align: center; */
+  opacity: 0;
+  transform: translateX(-50px); /* Changed from translateY */
+  animation: slideRight 0.8s ease forwards 0.3s; 
+   animation-delay: 1.5s; 
+}
+
+@keyframes slideRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.right-box {
+  /* text-align: center; */
+  opacity: 0;
+  transform: translateX(50px); /* Changed from translateY */
+  animation: slideRight 0.8s ease forwards 0.3s;  
+   animation-delay: 1.5s; 
+}
+@keyframes slideRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.card-text {
+  text-align: center;
+  opacity: 0;
+  transform: translateY(-60px);
+  animation: slideDownUpperDiv 0.8s ease forwards;
+ /* Heading ke baad thoda delay */
+ animation-delay: 3.5s;
+}
+
+@keyframes slideDownUpperDiv {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-div {
+  text-align: center;
+  opacity: 0;
+  transform: translateY(-60px);
+  animation: slideDownUpperDiv 0.8s ease forwards;
+ /* Heading ke baad thoda delay */
+ animation-delay: 4s;
+}
+
+@keyframes slideDownUpperDiv {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
