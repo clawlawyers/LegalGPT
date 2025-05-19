@@ -119,7 +119,7 @@ const SocketSidebar = () => {
                   handleNewChat();
                   navigate("/");
                 }}
-                className="w-full bg-[#2D2D2D] flex gap-1 justify-center items-center px-1 py-2 rounded-lg cursor-pointer"
+                className="home-btn w-full bg-[#2D2D2D] flex gap-1 justify-center items-center px-1 py-2 rounded-lg cursor-pointer"
               >
                 <HomeIcon fontSize="medium" />
                 <p className="m-0 max-w-fit text-lg font-bold">HOME</p>
