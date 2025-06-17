@@ -284,7 +284,7 @@ export function CasecardGpt({
         </p>
       </div>
       <div className="flex flex-col md:flex-row gap-2">
-        <button
+        <button 
           onClick={handleOpen}
           style={{
             border: "none",

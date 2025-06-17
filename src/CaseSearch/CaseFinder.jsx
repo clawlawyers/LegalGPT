@@ -270,7 +270,7 @@ export default function CaseFinder({
 
   return (
     <div className=" flex flex-col gap-2 pt-20 overflow-auto">
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center items-center heading">
         {/* {currentUser?.plan[0]?.planName === "FREE" ? <TimerComponent /> : null} */}
         <p className="text-2xl md:text-3xl text-center text-white font-bold m-0">
           Find Legal Cases With
@@ -352,8 +352,8 @@ export default function CaseFinder({
               </div>
             </div>
           </Modal>
-          <div>
-            <label>Enter Case Search</label>
+          <div className="uppar-div">
+         <label className="block text-left w-full">Enter Case Search</label>
             <form
               onSubmit={handleCaseSearch}
               style={{
@@ -382,7 +382,7 @@ export default function CaseFinder({
               />
               <button
                 type="submit"
-                className={Styles.bgbutton}
+                className={`${Styles.bgbutton} exp-button`}
                 style={{
                   backgroundColor: primaryColor,
                   color: "white",
@@ -398,7 +398,7 @@ export default function CaseFinder({
             </form>
           </div>
           <div className={Styles.inputGrid}>
-            <div className="flex-1">
+            <div className="flex-1 left-box">
               <div>Court Name</div>
               <FormControl
                 sx={{ width: "100%" }}
@@ -468,7 +468,7 @@ export default function CaseFinder({
                 )}
               </FormControl>
             </div>
-            <div style={{ display: "flex", gap: 10 }}>
+            <div className="right-box" style={{ display: "flex", gap: 10 }}>
               <div>
                 <div>Search Start Date</div>
                 <DatePicker
